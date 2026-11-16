@@ -1,0 +1,61 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://script/raka.gd" id="1_player_script"]
+[ext_resource type="Texture2D" uid="uid://cfhsawy8e5fvu" path="res://assets/character/RAKA KIRI DEPAN.png" id="2_raka_kiri_depan"]
+[ext_resource type="Texture2D" uid="uid://c4g1aybd48m3j" path="res://assets/character/RAKA KANAN DEPAN.png" id="3_raka_kanan_depan"]
+[ext_resource type="Texture2D" uid="uid://bk4alpkf2pmdr" path="res://assets/character/RAKA KIRI BELAKANG.png" id="4_raka_kiri_belakang"]
+[ext_resource type="Texture2D" uid="uid://b4koe2djfncfm" path="res://assets/character/RAKA KANAN BELAKANG.png" id="5_raka_kanan_belakang"]
+
+[sub_resource type="CapsuleShape2D" id="PlayerCapsule"]
+radius = 11.0
+height = 42.0
+
+[sub_resource type="SpriteFrames" id="PlayerFrames"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_raka_kiri_depan")
+}],
+"loop": true,
+"name": &"down_left",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_raka_kanan_depan")
+}],
+"loop": true,
+"name": &"down_right",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_raka_kiri_belakang")
+}],
+"loop": true,
+"name": &"up_left",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_raka_kanan_belakang")
+}],
+"loop": true,
+"name": &"up_right",
+"speed": 5.0
+}]
+
+[node name="Raka" type="CharacterBody2D"]
+script = ExtResource("1_player_script")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("PlayerCapsule")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -72)
+scale = Vector2(0.4, 0.4)
+sprite_frames = SubResource("PlayerFrames")
+animation = &"up_right"
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(0.3, 0.3)

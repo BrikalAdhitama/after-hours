@@ -1,0 +1,173 @@
+[gd_scene format=3 uid="uid://dgyyoe15wrfb2"]
+
+[ext_resource type="Texture2D" uid="uid://y5jlxct373gu" path="res://assets/gudang/RAK DUS 1.png" id="1_rak_dus_1"]
+[ext_resource type="Texture2D" uid="uid://f7qj6y2bx3rl" path="res://assets/gudang/RAK DUS 2.png" id="2_rak_dus_2"]
+[ext_resource type="Texture2D" uid="uid://claqxqiwlebp5" path="res://assets/gudang/RAK 2.png" id="3_rak_2"]
+[ext_resource type="Texture2D" uid="uid://be0cewm1ganug" path="res://assets/gudang/PINTU 1.png" id="4_pintu"]
+[ext_resource type="Texture2D" uid="uid://bjsan38l44m5v" path="res://assets/gudang/KURSI.png" id="5_kursi"]
+[ext_resource type="Texture2D" uid="uid://bk6f6s8n6n52h" path="res://assets/gudang/KURSI KURSI.png" id="6_kursi_kursi"]
+[ext_resource type="Texture2D" uid="uid://i5ppkws8lgjx" path="res://assets/gudang/CERMIN.png" id="7_cermin"]
+[ext_resource type="PackedScene" path="res://raka.tscn" id="9_raka"]
+[ext_resource type="Script" uid="uid://bnw8tpg8vo6ri" path="res://script/interactable.gd" id="10_interactable"]
+[ext_resource type="Script" uid="uid://bpdpi7w5vtuuo" path="res://script/gameplay_ui.gd" id="11_gameplay_ui"]
+[ext_resource type="Script" uid="uid://clth37gdqjjdy" path="res://script/portal.gd" id="12_portal"]
+[ext_resource type="Script" uid="uid://cp6rsms1t1sde" path="res://script/room_controller.gd" id="13_room_controller"]
+[ext_resource type="Texture2D" uid="uid://b2n20lw287pu2" path="res://assets/gudang/LATAR BELAKANG GUDANG.png" id="14_background"]
+
+[node name="Gudang" type="Node2D" unique_id=1361176150]
+y_sort_enabled = true
+script = ExtResource("13_room_controller")
+area_id = "gudang"
+
+[node name="LatarBelakang" type="Sprite2D" parent="." unique_id=973026925]
+z_index = -10
+position = Vector2(0, -250)
+texture = ExtResource("14_background")
+scale = Vector2(0.5, 0.5)
+
+[node name="RakDusKiri" type="Node2D" parent="." unique_id=13068354]
+position = Vector2(-400, 45)
+
+[node name="Sprite" type="Sprite2D" parent="RakDusKiri" unique_id=1095875138]
+position = Vector2(0.09, -105.21)
+scale = Vector2(0.18, 0.18)
+texture = ExtResource("1_rak_dus_1")
+
+[node name="Body" type="StaticBody2D" parent="RakDusKiri" unique_id=1767073478]
+
+[node name="Footprint" type="CollisionPolygon2D" parent="RakDusKiri/Body" unique_id=743050617]
+polygon = PackedVector2Array(-115.2, 20.7, 43.2, -71.1, 115.2, -22.5, -46.8, 71.1)
+
+[node name="RakDusBelakang" type="Node2D" parent="." unique_id=548712346]
+position = Vector2(-60, -152)
+
+[node name="Sprite" type="Sprite2D" parent="RakDusBelakang" unique_id=547403690]
+position = Vector2(0.09, -105.48)
+scale = Vector2(0.18, 0.18)
+texture = ExtResource("2_rak_dus_2")
+
+[node name="Body" type="StaticBody2D" parent="RakDusBelakang" unique_id=122778141]
+
+[node name="Footprint" type="CollisionPolygon2D" parent="RakDusBelakang/Body" unique_id=436785320]
+polygon = PackedVector2Array(-115.2, 21.6, 43.2, -70.2, 115.2, -21.6, -46.8, 72)
+
+[node name="RakKanan" type="Node2D" parent="." unique_id=2088961789]
+position = Vector2(245, -330)
+
+[node name="Sprite" type="Sprite2D" parent="RakKanan" unique_id=1127277916]
+position = Vector2(0, -98.1)
+scale = Vector2(0.18, 0.18)
+texture = ExtResource("3_rak_2")
+
+[node name="Body" type="StaticBody2D" parent="RakKanan" unique_id=2056404565]
+
+[node name="Footprint" type="CollisionPolygon2D" parent="RakKanan/Body" unique_id=2136756832]
+polygon = PackedVector2Array(-110.25, 34.2, -65.25, 66.6, 110.25, -34.2, 65.25, -66.6)
+
+[node name="KursiTersimpan" type="Node2D" parent="." unique_id=279623146]
+position = Vector2(575, -120)
+
+[node name="Sprite" type="Sprite2D" parent="KursiTersimpan" unique_id=389810861]
+position = Vector2(0, -35.37)
+scale = Vector2(0.18, 0.18)
+texture = ExtResource("6_kursi_kursi")
+
+[node name="Body" type="StaticBody2D" parent="KursiTersimpan" unique_id=56245326]
+
+[node name="Footprint" type="CollisionPolygon2D" parent="KursiTersimpan/Body" unique_id=1893231102]
+polygon = PackedVector2Array(-77.94, -34.2, -50.04, -68.4, 72.36, -18, 88.56, 10.8, 18.36, 53.46, -64.44, 7.2)
+
+[node name="KursiTunggal" type="Node2D" parent="." unique_id=1723207496]
+position = Vector2(705, -125)
+
+[node name="Sprite" type="Sprite2D" parent="KursiTunggal" unique_id=673094300]
+position = Vector2(0, -22.59)
+scale = Vector2(0.18, 0.18)
+texture = ExtResource("5_kursi")
+
+[node name="Body" type="StaticBody2D" parent="KursiTunggal" unique_id=446257688]
+
+[node name="Footprint" type="CollisionPolygon2D" parent="KursiTunggal/Body" unique_id=948149909]
+polygon = PackedVector2Array(-19.17, -9.9, -0.27, -17.1, 19.53, -6.3, 24.03, 9, -0.27, 17.82, -24.57, 7.2)
+
+[node name="Cermin" type="Sprite2D" parent="." unique_id=100075339]
+z_index = -1
+position = Vector2(465, -590)
+scale = Vector2(0.18, 0.18)
+texture = ExtResource("7_cermin")
+
+[node name="PintuKembaliVisual" type="Sprite2D" parent="." unique_id=653967563]
+position = Vector2(-700, 139)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("4_pintu")
+offset = Vector2(0, -595)
+z_index = -1
+
+[node name="PintuStudioVisual" type="Sprite2D" parent="." unique_id=611389381]
+position = Vector2(680, -264)
+scale = Vector2(0.22, 0.22)
+texture = ExtResource("4_pintu")
+offset = Vector2(0, -595)
+flip_h = true
+z_index = -1
+
+[node name="ClueRekaman" type="Node2D" parent="." unique_id=249003607]
+position = Vector2(-395, 155)
+script = ExtResource("10_interactable")
+target_name = "Rekaman suara"
+interaction_type = "clue"
+clue_id = "C4"
+clue_title = "Transkrip rekaman suara"
+clue_text = "Transkrip sementara: Ardi terus meminta seseorang untuk menunggu."
+
+[node name="ClueCatatan" type="Node2D" parent="." unique_id=350527836]
+position = Vector2(250, -210)
+script = ExtResource("10_interactable")
+target_name = "Catatan lama"
+interaction_type = "clue"
+clue_id = "C5"
+clue_title = "Catatan lama"
+clue_text = "Catatan ini menghubungkan Ardi dengan peristiwa hilangnya seorang mahasiswa setelah tertinggal sendirian di gedung pada malam hari."
+
+[node name="PintuKembali" type="Node2D" parent="." unique_id=1022153172]
+position = Vector2(-650, 230)
+script = ExtResource("12_portal")
+target_name = "pintu kembali ke LABKOM"
+destination_scene = "res://lab_komputer.tscn"
+destination_spawn = "DariGudang"
+
+[node name="PintuStudio" type="Node2D" parent="." unique_id=401543454]
+position = Vector2(700, -215)
+script = ExtResource("12_portal")
+target_name = "pintu Studio Desain"
+destination_scene = "res://studio_desain.tscn"
+destination_spawn = "DariGudang"
+required_clues = PackedStringArray("C4", "C5")
+
+[node name="Raka" parent="." unique_id=1362222405 instance=ExtResource("9_raka")]
+position = Vector2(-250, 130)
+
+[node name="GameplayUI" type="CanvasLayer" parent="." unique_id=962749591]
+script = ExtResource("11_gameplay_ui")
+
+[node name="Spawns" type="Node2D" parent="." unique_id=1155172773]
+
+[node name="DariLabkom" type="Marker2D" parent="Spawns" unique_id=1522004999]
+position = Vector2(-650, 230)
+
+[node name="DariStudio" type="Marker2D" parent="Spawns" unique_id=1115110194]
+position = Vector2(700, -215)
+
+[node name="BatasLantai" type="StaticBody2D" parent="."]
+
+[node name="Sisi1" type="CollisionPolygon2D" parent="BatasLantai"]
+polygon = PackedVector2Array(-884.499, 246.561, 356.999, -475.061, 311.772, -552.871, -929.727, 168.75)
+
+[node name="Sisi2" type="CollisionPolygon2D" parent="BatasLantai"]
+polygon = PackedVector2Array(315.43, -474.939, 884.57, -148.561, 929.342, -226.634, 360.202, -553.013)
+
+[node name="Sisi3" type="CollisionPolygon2D" parent="BatasLantai"]
+polygon = PackedVector2Array(884.499, -172.561, -356.999, 549.061, -311.772, 626.871, 929.727, -94.75)
+
+[node name="Sisi4" type="CollisionPolygon2D" parent="BatasLantai"]
+polygon = PackedVector2Array(-315.43, 548.939, -884.57, 222.561, -929.342, 300.634, -360.202, 627.013)

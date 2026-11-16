@@ -1,0 +1,234 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://assets/studiodesain/MEJA STUDIO 1.png" id="1_meja_1"]
+[ext_resource type="Texture2D" path="res://assets/studiodesain/MEJA STUDIO 2.png" id="2_meja_2"]
+[ext_resource type="Texture2D" path="res://assets/studiodesain/MEJA STUDIO 3.png" id="3_meja_3"]
+[ext_resource type="Texture2D" path="res://assets/studiodesain/MEJA STUDIO 4.png" id="4_meja_4"]
+[ext_resource type="Texture2D" path="res://assets/studiodesain/BOARD.png" id="5_board"]
+[ext_resource type="Texture2D" path="res://assets/studiodesain/LEMARI 4 PINTU.png" id="6_lemari"]
+[ext_resource type="Texture2D" path="res://assets/studiodesain/LOKER PUTIH.png" id="7_loker"]
+[ext_resource type="Texture2D" path="res://assets/studiodesain/MEJA PANJANG.png" id="8_meja_panjang"]
+[ext_resource type="Texture2D" path="res://assets/studiodesain/MEJA DOSEN 2.png" id="9_meja_dosen"]
+[ext_resource type="Texture2D" path="res://assets/studiodesain/IFP.png" id="10_ifp"]
+[ext_resource type="Texture2D" path="res://assets/studiodesain/RAK.png" id="11_rak"]
+[ext_resource type="Texture2D" path="res://assets/studiodesain/WATER DISPENSER.png" id="12_dispenser"]
+[ext_resource type="Texture2D" path="res://assets/studiodesain/PINTU 1.png" id="13_pintu"]
+[ext_resource type="PackedScene" path="res://raka.tscn" id="14_raka"]
+[ext_resource type="Script" path="res://script/interactable.gd" id="15_interactable"]
+[ext_resource type="Script" path="res://script/gameplay_ui.gd" id="16_gameplay_ui"]
+[ext_resource type="Script" path="res://script/portal.gd" id="17_portal"]
+[ext_resource type="Script" path="res://script/room_controller.gd" id="18_room_controller"]
+
+[ext_resource type="Texture2D" path="res://assets/studiodesain/LATAR BELAKANG STUDIO.png" id="19_background"]
+
+[node name="StudioDesain" type="Node2D"]
+y_sort_enabled = true
+script = ExtResource("18_room_controller")
+area_id = "studio_desain"
+
+[node name="LatarBelakang" type="Sprite2D" parent="."]
+z_index = -10
+position = Vector2(0, -150)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("19_background")
+
+[node name="Props" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="MejaStudio1" type="Node2D" parent="Props"]
+position = Vector2(-550, 200)
+
+[node name="Sprite" type="Sprite2D" parent="Props/MejaStudio1"]
+position = Vector2(0.125, -60.125)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("1_meja_1")
+
+[node name="Body" type="StaticBody2D" parent="Props/MejaStudio1"]
+
+[node name="Footprint" type="CollisionPolygon2D" parent="Props/MejaStudio1/Body"]
+polygon = PackedVector2Array(-217.5, 25, 75, -147.5, 212.5, -75, 237.75, -12.5, 0, 117.25, -105, 97.5)
+
+[node name="MejaStudio2" type="Node2D" parent="Props"]
+position = Vector2(-50, -40)
+
+[node name="Sprite" type="Sprite2D" parent="Props/MejaStudio2"]
+position = Vector2(0, -57.375)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("2_meja_2")
+
+[node name="Body" type="StaticBody2D" parent="Props/MejaStudio2"]
+
+[node name="Footprint" type="CollisionPolygon2D" parent="Props/MejaStudio2/Body"]
+polygon = PackedVector2Array(205.605, 23.071, -70.739, -139.947, -200.645, -71.432, -224.5, -12.368, 0.118, 110.25, 99.319, 91.586)
+
+[node name="MejaStudio3" type="Node2D" parent="Props"]
+position = Vector2(-30, 490)
+
+[node name="Sprite" type="Sprite2D" parent="Props/MejaStudio3"]
+position = Vector2(0.125, -60)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("3_meja_3")
+
+[node name="Body" type="StaticBody2D" parent="Props/MejaStudio3"]
+
+[node name="Footprint" type="CollisionPolygon2D" parent="Props/MejaStudio3/Body"]
+polygon = PackedVector2Array(-217.5, 25, 75, -147.5, 212.5, -75, 237.75, -12.5, 0, 117.25, -105, 97.5)
+
+[node name="MejaStudio4" type="Node2D" parent="Props"]
+position = Vector2(470, 250)
+
+[node name="Sprite" type="Sprite2D" parent="Props/MejaStudio4"]
+position = Vector2(0.375, -57.125)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("4_meja_4")
+
+[node name="Body" type="StaticBody2D" parent="Props/MejaStudio4"]
+
+[node name="Footprint" type="CollisionPolygon2D" parent="Props/MejaStudio4/Body"]
+polygon = PackedVector2Array(205.605, 23.071, -70.739, -139.947, -200.645, -71.432, -224.5, -12.368, 0.118, 110.25, 99.319, 91.586)
+
+[node name="MejaPanjang" type="Node2D" parent="Props"]
+position = Vector2(-980, -125)
+
+[node name="Sprite" type="Sprite2D" parent="Props/MejaPanjang"]
+position = Vector2(-0.125, -48.75)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("8_meja_panjang")
+
+[node name="Body" type="StaticBody2D" parent="Props/MejaPanjang"]
+
+[node name="Footprint" type="CollisionPolygon2D" parent="Props/MejaPanjang/Body"]
+polygon = PackedVector2Array(-217, 81, -142, 126.5, 216.75, -81.5, 141.75, -126.5)
+
+[node name="MejaDosen" type="Node2D" parent="Props"]
+position = Vector2(250, -310)
+
+[node name="Sprite" type="Sprite2D" parent="Props/MejaDosen"]
+position = Vector2(1.875, -54.125)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("9_meja_dosen")
+
+[node name="Body" type="StaticBody2D" parent="Props/MejaDosen"]
+
+[node name="Footprint" type="CollisionPolygon2D" parent="Props/MejaDosen/Body"]
+polygon = PackedVector2Array(-103.75, 12.5, -33.75, 66.75, 103.75, -20, 28.75, -67.5)
+
+[node name="Board" type="Sprite2D" parent="Props"]
+position = Vector2(350, -540)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("5_board")
+z_index = -1
+
+[node name="Lemari" type="Node2D" parent="Props"]
+position = Vector2(-600, -355)
+
+[node name="Sprite" type="Sprite2D" parent="Props/Lemari"]
+position = Vector2(0, -130.375)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("6_lemari")
+
+[node name="Body" type="StaticBody2D" parent="Props/Lemari"]
+
+[node name="Footprint" type="CollisionPolygon2D" parent="Props/Lemari/Body"]
+polygon = PackedVector2Array(-144.125, 48.25, -84.125, 83.5, 144.125, -48.25, 84.125, -83.5)
+
+[node name="Loker" type="Node2D" parent="Props"]
+position = Vector2(650, -105)
+
+[node name="Sprite" type="Sprite2D" parent="Props/Loker"]
+position = Vector2(-0.125, -118.75)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("7_loker")
+
+[node name="Body" type="StaticBody2D" parent="Props/Loker"]
+
+[node name="Footprint" type="CollisionPolygon2D" parent="Props/Loker/Body"]
+polygon = PackedVector2Array(-102.25, -38.75, 64.5, 61.25, 102, 38.75, -64.75, -61.25)
+
+[node name="IFP" type="Node2D" parent="Props"]
+position = Vector2(-300, -505)
+
+[node name="Sprite" type="Sprite2D" parent="Props/IFP"]
+position = Vector2(-4.25, -137.5)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("10_ifp")
+
+[node name="Body" type="StaticBody2D" parent="Props/IFP"]
+
+[node name="Footprint" type="CollisionPolygon2D" parent="Props/IFP/Body"]
+polygon = PackedVector2Array(-97.25, -3.5, 1.5, 66, 97.5, 4, 12.75, -66)
+
+[node name="Rak" type="Node2D" parent="Props"]
+position = Vector2(1100, 122)
+
+[node name="Sprite" type="Sprite2D" parent="Props/Rak"]
+position = Vector2(0.125, -94.75)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("11_rak")
+
+[node name="Body" type="StaticBody2D" parent="Props/Rak"]
+
+[node name="Footprint" type="CollisionPolygon2D" parent="Props/Rak/Body"]
+polygon = PackedVector2Array(-120, -44.25, 80, 67.25, 120.25, 44.25, -79.75, -67.25)
+
+[node name="Dispenser" type="Node2D" parent="Props"]
+position = Vector2(1270, 215)
+
+[node name="Sprite" type="Sprite2D" parent="Props/Dispenser"]
+position = Vector2(0, -65.5)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("12_dispenser")
+
+[node name="Body" type="StaticBody2D" parent="Props/Dispenser"]
+
+[node name="Footprint" type="CollisionPolygon2D" parent="Props/Dispenser/Body"]
+polygon = PackedVector2Array(-37, -5, 18, 16.5, 37, 5, -18, -16.5)
+
+[node name="PintuVisual" type="Sprite2D" parent="Props"]
+position = Vector2(-1250, -68)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("13_pintu")
+offset = Vector2(0, -595)
+z_index = -1
+
+[node name="ClueDokumentasi" type="Node2D" parent="."]
+position = Vector2(250, -120)
+script = ExtResource("15_interactable")
+target_name = "Dokumentasi lama"
+interaction_type = "clue"
+clue_id = "C6"
+clue_title = "Dokumentasi tentang Ardi"
+clue_text = "Dokumentasi ini mengonfirmasi bahwa Ardi hilang setelah tertinggal sendirian di gedung dan terjebak dalam pengulangan malam yang sama."
+
+[node name="PintuKembali" type="Node2D" parent="."]
+position = Vector2(-1250, 60)
+script = ExtResource("17_portal")
+target_name = "pintu kembali ke LABKOM"
+destination_scene = "res://lab_komputer.tscn"
+destination_spawn = "DariStudio"
+required_clues = PackedStringArray("C6")
+
+[node name="Raka" parent="." instance=ExtResource("14_raka")]
+position = Vector2(-1250, 60)
+
+[node name="GameplayUI" type="CanvasLayer" parent="."]
+script = ExtResource("16_gameplay_ui")
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="DariGudang" type="Marker2D" parent="Spawns"]
+position = Vector2(-1250, 60)
+
+[node name="BatasLantai" type="StaticBody2D" parent="."]
+
+[node name="Sisi1" type="CollisionPolygon2D" parent="BatasLantai"]
+polygon = PackedVector2Array(-1426.306, 33.463, -184.694, -680.463, -229.557, -758.485, -1471.168, -44.558)
+
+[node name="Sisi2" type="CollisionPolygon2D" parent="BatasLantai"]
+polygon = PackedVector2Array(-226.31, -680.456, 1425.31, 268.456, 1470.145, 190.419, -181.475, -758.493)
+
+[node name="Sisi3" type="CollisionPolygon2D" parent="BatasLantai"]
+polygon = PackedVector2Array(1425.296, 244.521, 173.704, 965.479, 218.626, 1043.466, 1470.219, 322.507)
+
+[node name="Sisi4" type="CollisionPolygon2D" parent="BatasLantai"]
+polygon = PackedVector2Array(215.238, 965.58, -1426.238, 9.42, -1471.538, 87.188, 169.938, 1043.348)

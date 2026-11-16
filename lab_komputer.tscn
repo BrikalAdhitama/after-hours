@@ -1,0 +1,368 @@
+[gd_scene format=3 uid="uid://6bn3ovg86xy1"]
+
+[ext_resource type="Texture2D" uid="uid://dfdkcqrrp2tdf" path="res://assets/labkom/LATAR BELAKANG.png" id="1_xtpm3"]
+[ext_resource type="Texture2D" uid="uid://bsreebp847bkg" path="res://assets/labkom/MEJA KOMPUTER.png" id="2_iibgw"]
+[ext_resource type="Texture2D" uid="uid://b47ut1evbwms8" path="res://assets/labkom/AC 2.png" id="3_8plyd"]
+[ext_resource type="Texture2D" uid="uid://cd2xu83ogl80q" path="res://assets/labkom/AC.png" id="4_k4r62"]
+[ext_resource type="Texture2D" uid="uid://cj1vohu3sfqwe" path="res://assets/labkom/LAYAR PROYEKTOR.png" id="5_wsv8a"]
+[ext_resource type="Texture2D" uid="uid://bwn18sdwi47aa" path="res://assets/labkom/WHITEBOARD.png" id="6_kcpvw"]
+[ext_resource type="Texture2D" uid="uid://b00o8inishka8" path="res://assets/labkom/LOKER.png" id="7_2cat6"]
+[ext_resource type="Texture2D" uid="uid://ddjs3rehlddgl" path="res://assets/labkom/PINTU 1.png" id="8_vuuix"]
+[ext_resource type="Texture2D" uid="uid://byrmpyorkc4pn" path="res://assets/labkom/PINTU 2.png" id="9_nclba"]
+[ext_resource type="Texture2D" uid="uid://mqfyehs4jsnx" path="res://assets/labkom/MEJA DOSEN.png" id="10_byqdf"]
+[ext_resource type="Texture2D" uid="uid://1g3vn63o7ltm" path="res://assets/labkom/LEMARI BELAKANG.png" id="11_cjvhy"]
+[ext_resource type="Texture2D" uid="uid://ege5evipcv6l" path="res://assets/labkom/MADING.png" id="12_86elu"]
+[ext_resource type="Texture2D" uid="uid://bo0whbqfym1kh" path="res://assets/labkom/KALENDER.png" id="13_o6njp"]
+[ext_resource type="Texture2D" uid="uid://dp2w5bweit5x3" path="res://assets/labkom/TRASH.png" id="14_0jebm"]
+[ext_resource type="Texture2D" uid="uid://lsoh7jta86xr" path="res://assets/labkom/KOTAK P3K.png" id="15_aqgqd"]
+[ext_resource type="Texture2D" uid="uid://c8sqph2wxqs2l" path="res://assets/labkom/PRINTER.png" id="16_03qhs"]
+[ext_resource type="Texture2D" uid="uid://4eeqpnibl5h5" path="res://assets/labkom/HVS 1 RIM.png" id="17_k3iau"]
+[ext_resource type="Texture2D" uid="uid://104icl2qjdlh" path="res://assets/labkom/LEMARI 2.png" id="18_ky0s7"]
+[ext_resource type="Texture2D" uid="uid://bjw3y4nagpnk" path="res://assets/labkom/Group 142.png" id="19_t5h2q"]
+[ext_resource type="Texture2D" uid="uid://dq2tfuu507poo" path="res://assets/labkom/KURSI RODA.png" id="20_m3g8b"]
+[ext_resource type="Texture2D" uid="uid://4ayvmporjogy" path="res://assets/labkom/MEJA PANJANG.png" id="21_ripbg"]
+[ext_resource type="Texture2D" uid="uid://co6u7nlogm8xw" path="res://assets/labkom/LACI.png" id="22_k1pjr"]
+[ext_resource type="Script" uid="uid://knnly1c1nas3" path="res://script/raka.gd" id="23_1g52t"]
+[ext_resource type="Texture2D" uid="uid://cfhsawy8e5fvu" path="res://assets/character/RAKA KIRI DEPAN.png" id="24_vyof7"]
+[ext_resource type="Texture2D" uid="uid://c4g1aybd48m3j" path="res://assets/character/RAKA KANAN DEPAN.png" id="25_h4rx0"]
+[ext_resource type="Texture2D" uid="uid://bk4alpkf2pmdr" path="res://assets/character/RAKA KIRI BELAKANG.png" id="26_2qrjx"]
+[ext_resource type="Texture2D" uid="uid://b4koe2djfncfm" path="res://assets/character/RAKA KANAN BELAKANG.png" id="27_qrfx3"]
+[ext_resource type="Script" path="res://script/interactable.gd" id="28_interactable"]
+[ext_resource type="Script" path="res://script/gameplay_ui.gd" id="29_gameplay_ui"]
+[ext_resource type="Script" path="res://script/room_controller.gd" id="30_room_controller"]
+[ext_resource type="Script" path="res://script/portal.gd" id="31_portal"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_y0xve"]
+radius = 11.0
+height = 42.0
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_4jaiw"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("24_vyof7")
+}],
+"loop": 1,
+"name": &"down_left",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("25_h4rx0")
+}],
+"loop": 1,
+"name": &"down_right",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("26_2qrjx")
+}],
+"loop": 1,
+"name": &"up_left",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("27_qrfx3")
+}],
+"loop": 1,
+"name": &"up_right",
+"speed": 5.0
+}]
+
+[node name="LabKomputer" type="Node2D" unique_id=293524283]
+position = Vector2(0, 45)
+script = ExtResource("30_room_controller")
+area_id = "labkom"
+
+[node name="LatarBelakang" type="Sprite2D" parent="." unique_id=126747373]
+position = Vector2(29, -78)
+texture = ExtResource("1_xtpm3")
+
+[node name="Object" type="Node2D" parent="." unique_id=779535528]
+position = Vector2(29, -78)
+
+[node name="MejaKomputer7" type="Sprite2D" parent="Object" unique_id=646978400]
+position = Vector2(265, 735)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("2_iibgw")
+
+[node name="Ac2" type="Sprite2D" parent="Object" unique_id=2020289710]
+position = Vector2(-540, -777)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("3_8plyd")
+
+[node name="Ac4" type="Sprite2D" parent="Object" unique_id=397334090]
+position = Vector2(-933, -543)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("3_8plyd")
+
+[node name="Ac" type="Sprite2D" parent="Object" unique_id=1174758571]
+position = Vector2(220, -715)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("4_k4r62")
+
+[node name="Ac3" type="Sprite2D" parent="Object" unique_id=1271716276]
+position = Vector2(788, -397)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("4_k4r62")
+
+[node name="LayarProyektor" type="Sprite2D" parent="Object" unique_id=1687718090]
+position = Vector2(270, -451)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("5_wsv8a")
+
+[node name="Whiteboard" type="Sprite2D" parent="Object" unique_id=1602299434]
+position = Vector2(531, -284)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("6_kcpvw")
+
+[node name="Loker" type="Sprite2D" parent="Object" unique_id=2143506902]
+position = Vector2(-330, -529)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("7_2cat6")
+
+[node name="Pintu1" type="Sprite2D" parent="Object" unique_id=541518756]
+position = Vector2(-1182, -103)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("8_vuuix")
+
+[node name="Pintu2" type="Sprite2D" parent="Object" unique_id=1942121819]
+position = Vector2(-59, -573)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("9_nclba")
+
+[node name="MejaDosen" type="Sprite2D" parent="Object" unique_id=1427867903]
+position = Vector2(888, 179)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("10_byqdf")
+
+[node name="LemariBelakang" type="Sprite2D" parent="Object" unique_id=1045813873]
+position = Vector2(-820, 367)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("11_cjvhy")
+
+[node name="LemariBelakang2" type="Sprite2D" parent="Object" unique_id=1193737403]
+position = Vector2(-314, 659)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("11_cjvhy")
+
+[node name="Mading" type="Sprite2D" parent="Object" unique_id=211366771]
+position = Vector2(-884, -291)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("12_86elu")
+
+[node name="Kalender" type="Sprite2D" parent="Object" unique_id=612834222]
+position = Vector2(-1054, -197)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("13_o6njp")
+
+[node name="Trash" type="Sprite2D" parent="Object" unique_id=448127416]
+position = Vector2(-1305, 92)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("14_0jebm")
+
+[node name="KotakP3k" type="Sprite2D" parent="Object" unique_id=540012648]
+position = Vector2(-1320, -90)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("15_aqgqd")
+
+[node name="Printer" type="Sprite2D" parent="Object" unique_id=27038041]
+position = Vector2(-487, -372)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("16_03qhs")
+
+[node name="Hvs1Rim" type="Sprite2D" parent="Object" unique_id=360986013]
+position = Vector2(-546, -299)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("17_k3iau")
+
+[node name="Lemari2" type="Sprite2D" parent="Object" unique_id=3078887]
+position = Vector2(-660, -340)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("18_ky0s7")
+
+[node name="Group142" type="Sprite2D" parent="Object" unique_id=1271173944]
+position = Vector2(-1034, -64)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("19_t5h2q")
+
+[node name="KursiRoda3" type="Sprite2D" parent="Object" unique_id=935543469]
+position = Vector2(-532, -132)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("20_m3g8b")
+
+[node name="MejaPanjang" type="Sprite2D" parent="Object" unique_id=1967477704]
+position = Vector2(-471, -69)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("21_ripbg")
+
+[node name="KursiRoda" type="Sprite2D" parent="Object" unique_id=31407877]
+position = Vector2(-522, 55)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("20_m3g8b")
+
+[node name="KursiRoda2" type="Sprite2D" parent="Object" unique_id=666063475]
+position = Vector2(-289, -90)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("20_m3g8b")
+
+[node name="Laci" type="Sprite2D" parent="Object" unique_id=857721473]
+position = Vector2(1228, 243)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("22_k1pjr")
+
+[node name="MejaKomputer6" type="Sprite2D" parent="Object" unique_id=1302645764]
+position = Vector2(-86, 530)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("2_iibgw")
+
+[node name="MejaKomputer2" type="Sprite2D" parent="Object" unique_id=2020893798]
+position = Vector2(224, 301)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("2_iibgw")
+
+[node name="MejaKomputer3" type="Sprite2D" parent="Object" unique_id=1703835555]
+position = Vector2(604, 522)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("2_iibgw")
+
+[node name="MejaKomputer" type="Sprite2D" parent="Object" unique_id=2005088584]
+position = Vector2(-103, 97)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("2_iibgw")
+
+[node name="MejaKomputer5" type="Sprite2D" parent="Object" unique_id=377503121]
+position = Vector2(-404, 318)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("2_iibgw")
+
+[node name="LaptopInteractable" type="Node2D" parent="Object"]
+position = Vector2(224, 301)
+script = ExtResource("28_interactable")
+target_name = "Laptop"
+interaction_type = "clue"
+clue_id = "C1"
+clue_title = "Hasil deteksi CCTV"
+clue_text = "Foto CCTV menampilkan seseorang duduk di ujung koridor, tetapi hasil model menyatakan ‘Tidak ada orang’. Foto tersebut berasal dari beberapa tahun lalu."
+
+[node name="MadingInteractable" type="Node2D" parent="Object"]
+position = Vector2(-884, -291)
+script = ExtResource("28_interactable")
+target_name = "Mading"
+interaction_type = "clue"
+clue_id = "C2"
+clue_title = "Informasi mading"
+clue_text = "Informasi awal tentang Ardi, mahasiswa yang hilang bertahun-tahun lalu."
+
+[node name="LokerInteractable" type="Node2D" parent="Object"]
+position = Vector2(-330, -529)
+script = ExtResource("28_interactable")
+target_name = "Loker"
+interaction_type = "clue"
+clue_id = "C3"
+clue_title = "Kartu mahasiswa Ardi"
+clue_text = "Kartu mahasiswa ini mengidentifikasi nama Ardi."
+
+[node name="LemariInteractable" type="Node2D" parent="Object"]
+position = Vector2(-660, -340)
+script = ExtResource("28_interactable")
+target_name = "Lemari"
+interaction_type = "hide"
+
+[node name="PintuKeluarPortal" type="Node2D" parent="Object"]
+position = Vector2(-1182, -103)
+script = ExtResource("31_portal")
+target_name = "pintu keluar utama"
+is_loop_exit = true
+
+[node name="PintuGudangPortal" type="Node2D" parent="Object"]
+position = Vector2(-59, -573)
+script = ExtResource("31_portal")
+target_name = "pintu Gudang"
+destination_scene = "res://gudang.tscn"
+destination_spawn = "DariLabkom"
+required_clues = PackedStringArray("C1", "C2", "C3")
+
+[node name="Raka" type="CharacterBody2D" parent="." unique_id=512393967]
+script = ExtResource("23_1g52t")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Raka" unique_id=522916869]
+position = Vector2(454, -15)
+shape = SubResource("CapsuleShape2D_y0xve")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Raka" unique_id=1656286647]
+position = Vector2(454, -73)
+scale = Vector2(0.4, 0.4)
+sprite_frames = SubResource("SpriteFrames_4jaiw")
+animation = &"up_right"
+
+[node name="Camera2D" type="Camera2D" parent="Raka" unique_id=1442516257]
+visible = false
+position = Vector2(-66, -71)
+zoom = Vector2(0.3, 0.3)
+
+[node name="CollosionObject" type="StaticBody2D" parent="." unique_id=1165660766]
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="CollosionObject" unique_id=1046155100]
+position = Vector2(-75, -21)
+polygon = PackedVector2Array(110, 17, 46, -20, 46, -47, -19, -84, -22, -82, -22, -60, -41, -71, -110, -31, -110, 74, -104, 75, -104, 85, -81, 96, -69, 102, -70, 104, -83, 105, -98, 113, -106, 122, -110, 132, -109, 141, -103, 149, -96, 155, -84, 160, -71, 163, -58, 163, -45, 161, -36, 158, -26, 153, -18, 141, -17, 127, 3, 137, 16, 145, 35, 156, 38, 159, 43, 162, 112, 123)
+
+[node name="CollisionPolygon2D3" type="CollisionPolygon2D" parent="CollosionObject" unique_id=1024948915]
+position = Vector2(252, 183)
+polygon = PackedVector2Array(111, 16, 46, -20, 46, -47, -19, -84, -22, -82, -22, -60, -41, -71, -110, -31, -110, 74, -104, 75, -104, 85, -81, 96, -69, 102, -70, 104, -83, 105, -98, 113, -106, 122, -110, 132, -109, 141, -103, 149, -96, 155, -84, 160, -71, 163, -58, 163, -45, 161, -36, 158, -26, 153, -18, 141, -17, 127, 3, 137, 16, 145, 35, 156, 38, 159, 43, 162, 112, 123)
+
+[node name="CollisionPolygon2D4" type="CollisionPolygon2D" parent="CollosionObject" unique_id=1444454694]
+position = Vector2(632, 404)
+polygon = PackedVector2Array(111, 16, 46, -20, 46, -47, -19, -84, -22, -82, -22, -60, -41, -71, -110, -31, -110, 74, -104, 75, -104, 85, -81, 96, -69, 102, -70, 104, -83, 105, -98, 113, -106, 122, -110, 132, -109, 141, -103, 149, -96, 155, -84, 160, -71, 163, -58, 163, -45, 161, -36, 158, -26, 153, -18, 141, -17, 127, 3, 137, 16, 145, 35, 156, 38, 159, 43, 162, 112, 123)
+
+[node name="CollisionPolygon2D5" type="CollisionPolygon2D" parent="CollosionObject" unique_id=1485570735]
+position = Vector2(293, 617)
+polygon = PackedVector2Array(111, 16, 46, -20, 46, -47, -19, -84, -22, -82, -22, -60, -41, -71, -110, -31, -110, 74, -104, 75, -104, 85, -81, 96, -69, 102, -70, 104, -83, 105, -98, 113, -106, 122, -110, 132, -109, 141, -103, 149, -96, 155, -84, 160, -71, 163, -58, 163, -45, 161, -36, 158, -26, 153, -18, 141, -17, 127, 3, 137, 16, 145, 35, 156, 38, 159, 43, 162, 112, 123)
+
+[node name="CollisionPolygon2D6" type="CollisionPolygon2D" parent="CollosionObject" unique_id=67902983]
+position = Vector2(-58, 413)
+polygon = PackedVector2Array(111, 16, 46, -20, 46, -47, -19, -84, -22, -82, -22, -60, -41, -71, -110, -31, -110, 74, -104, 75, -104, 85, -81, 96, -69, 102, -70, 104, -83, 105, -98, 113, -106, 122, -110, 132, -109, 141, -103, 149, -96, 155, -84, 160, -71, 163, -58, 163, -45, 161, -36, 158, -26, 153, -18, 141, -17, 127, 3, 137, 16, 145, 35, 156, 38, 159, 43, 162, 112, 123)
+
+[node name="CollisionPolygon2D7" type="CollisionPolygon2D" parent="CollosionObject" unique_id=1682724665]
+position = Vector2(-375, 200)
+polygon = PackedVector2Array(111, 16, 46, -20, 46, -47, -19, -84, -22, -82, -22, -60, -41, -71, -110, -31, -110, 74, -104, 75, -104, 85, -81, 96, -69, 102, -70, 104, -83, 105, -98, 113, -106, 122, -110, 132, -109, 141, -103, 149, -96, 155, -84, 160, -71, 163, -58, 163, -45, 161, -36, 158, -26, 153, -18, 141, -17, 127, 3, 137, 16, 145, 35, 156, 38, 159, 43, 162, 112, 123)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="CollosionObject" unique_id=2086274101]
+polygon = PackedVector2Array(-814, 129, -866, 162, -867, 390, -769, 448, -715, 416, -716, 187)
+
+[node name="CollisionPolygon2D8" type="CollisionPolygon2D" parent="CollosionObject" unique_id=1539432583]
+position = Vector2(1, 2)
+polygon = PackedVector2Array(-309, 419, -361, 452, -362, 680, -264, 738, -210, 706, -211, 477)
+
+[node name="CollisionPolygon2D9" type="CollisionPolygon2D" parent="CollosionObject" unique_id=1503173090]
+polygon = PackedVector2Array(-609, -576, -707, -520, -707, -291, -654, -261, -556, -316, -556, -546)
+
+[node name="CollisionPolygon2D10" type="CollisionPolygon2D" parent="CollosionObject" unique_id=831448174]
+polygon = PackedVector2Array(-659, -118, -659, -19, -581, 30, -532, -1, -533, 10, -531, 19, -526, 27, -510, 34, -492, 38, -473, 32, -454, 19, -452, 9, -456, 0, -461, -7, -459, -14, -462, -17, -472, -14, -483, -15, -485, -25, -464, -39, -347, -104, -300, -131, -293, -119, -281, -110, -263, -108, -243, -110, -228, -117, -220, -129, -221, -142, -229, -151, -226, -158, -232, -161, -239, -158, -249, -161, -226, -175, -225, -278, -304, -323, -495, -212, -496, -223, -477, -229, -469, -239, -470, -256, -480, -265, -490, -268, -502, -271, -514, -268, -524, -263, -531, -259, -533, -253, -534, -243, -532, -236, -526, -229, -515, -225, -509, -224, -507, -213, -511, -209, -511, -205, -512, -203, -521, -198, -530, -204, -534, -201, -533, -194, -539, -186)
+
+[node name="CollosionTembok" type="StaticBody2D" parent="." unique_id=1084255770]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="CollosionTembok" unique_id=1887816350]
+polygon = PackedVector2Array(-1377, -432, -1376, 94, -1300, 52, -1284, 63, -1253, 47, -1252, 24, -1219, 4, -1215, 5, -1200, -3, -1199, -8, -1105, -61, -1101, -59, -1087, -68, -1087, -73, -1053, -90, -1009, -63, -958, -92, -957, -147, -707, -291, -655, -261, -556, -317, -555, -356, -514, -331, -481, -349, -481, -361, -484, -364, -474, -371, -461, -355, -391, -392, -391, -427, -377, -419, -171, -536, -172, -765, -179, -770, -178, -1124)
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="CollosionTembok" unique_id=1973377465]
+polygon = PackedVector2Array(1434, 331, 1319, 265, 1286, 285, 1194, 232, 1195, 191, 1038, 103, 1039, 193, 955, 241, 794, 148, 796, 49, 787, 45, 785, 38, 859, -3, 83, -449, 82, -440, 78, -438, 63, -446, 63, -452, -127, -561, -131, -554, -143, -565, -144, -581, -171, -597, -177, -1124, 1425, -192)
+
+[node name="CollisionPolygon2D3" type="CollisionPolygon2D" parent="CollosionTembok" unique_id=1720357034]
+polygon = PackedVector2Array(-1376, 94, 189, 1070, 1434, 331, 1490, 426, 189, 1170, -1376, 194)
+
+[node name="GameplayUI" type="CanvasLayer" parent="."]
+script = ExtResource("29_gameplay_ui")
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="LoopReturn" type="Marker2D" parent="Spawns"]
+position = Vector2(0, 0)
+
+[node name="DariGudang" type="Marker2D" parent="Spawns"]
+position = Vector2(120, 250)
+
+[node name="DariStudio" type="Marker2D" parent="Spawns"]
+position = Vector2(300, 250)
