@@ -1,4 +1,5 @@
 extends Control
+const Investigation = preload("res://script/investigation_data.gd")
 signal action_selected(action: String)
 var _title: Label
 var _body: Label
@@ -27,28 +28,44 @@ func _ready() -> void:
 	_actions.add_theme_constant_override("separation",20)
 	add_child(_actions)
 
-func present(mode: String) -> void:
+func present(mode: String, feedback: String = "") -> void:
 	for child in _actions.get_children():
 		_actions.remove_child(child)
 		child.queue_free()
 	_raka.hide()
 	_art.position = Vector2(130,210)
 	_art.size = Vector2(480,740)
+	_body.size.y = 260
+	_actions.position.y = 660
 	match mode:
+		"deduction":
+			var step: int = mini(GameState.deduction_step, Investigation.QUESTIONS.size() - 1)
+			var question: Dictionary = Investigation.QUESTIONS[step]
+			_title.text = "Hubungkan petunjuk %d / 3" % (step + 1)
+			_body.size.y = 190
+			_body.text = str(question["question"]) + ("\n\n" + feedback if not feedback.is_empty() else "\nPilih kesimpulan yang didukung bukti. I untuk membaca petunjuk.")
+			_art.texture = preload("res://assets/ilustrasi/IMG_3828.PNG")
+			_actions.position.y = 560
+			for i in range(question["options"].size()):
+				_action(str(question["options"][i]), "case_answer_" + str(i))
+			_action("Baca petunjuk [I]", "case_read")
+			_action("Kembali menelusuri ruangan [Esc]", "case_back")
+			for button in _actions.get_children():
+				button.add_theme_font_size_override("font_size",24)
 		"caught":
 			_art.position = Vector2(50,210)
 			_art.size = Vector2(620,740)
-			_title.text = "Tertangkap"
+			_title.text = "GAME OVER"
 			_body.text = "Ulangi dari sesaat sebelum pengejaran. Semua petunjuk yang sudah tersimpan pada checkpoint tetap ada."
 			_art.texture = preload("res://assets/ilustrasi/IMG_3842.PNG")
-			_action("Ulangi dari checkpoint", "retry")
-			_action("Kembali ke menu", "menu")
+			_action("COBA LAGI", "retry")
+			_action("MENU UTAMA", "menu")
 		"choice":
 			_title.text = "Pintu terakhir"
 			_body.text = "Ardi masih meminta untuk ditunggu. Apa yang akan kamu lakukan?"
 			_art.texture = preload("res://assets/ilustrasi/IMG_3845.PNG")
-			_action("Menunggu Ardi", "wait")
-			_action("Pulang sendirian", "leave")
+			_action("Tunggu Ardi", "wait")
+			_action("Pergi Sendiri", "leave")
 		"ending":
 			_art.position = Vector2(70,220)
 			_art.size = Vector2(300,700)

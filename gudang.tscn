@@ -118,7 +118,7 @@ target_name = "Rekaman suara"
 interaction_type = "clue"
 clue_id = "C4"
 clue_title = "Transkrip rekaman suara"
-clue_text = "Transkrip sementara: Ardi terus meminta seseorang untuk menunggu."
+clue_text = "Transkrip sementara: \"... tunggu aku ...\" Permintaan yang sama berulang."
 
 [node name="ClueCatatan" type="Node2D" parent="." unique_id=350527836]
 position = Vector2(250, -210)
@@ -127,22 +127,21 @@ target_name = "Catatan lama"
 interaction_type = "clue"
 clue_id = "C5"
 clue_title = "Catatan lama"
-clue_text = "Catatan ini menghubungkan Ardi dengan peristiwa hilangnya seorang mahasiswa setelah tertinggal sendirian di gedung pada malam hari."
+clue_text = "Catatan lama menyebut seorang mahasiswa yang hilang setelah tertinggal sendirian di gedung pada malam hari."
 
-[node name="PintuKembali" type="Node2D" parent="." unique_id=1022153172]
+[node name="PintuKembali" type="Area2D" parent="." unique_id=1022153172]
 position = Vector2(-650, 230)
 script = ExtResource("12_portal")
 target_name = "pintu kembali ke LABKOM"
 destination_scene = "res://lab_komputer.tscn"
 destination_spawn = "DariGudang"
 
-[node name="PintuStudio" type="Node2D" parent="." unique_id=401543454]
+[node name="PintuStudio" type="Area2D" parent="." unique_id=401543454]
 position = Vector2(700, -215)
 script = ExtResource("12_portal")
 target_name = "pintu Studio Desain"
 destination_scene = "res://studio_desain.tscn"
 destination_spawn = "DariGudang"
-required_clues = PackedStringArray("C4", "C5")
 
 [node name="Raka" parent="." unique_id=1362222405 instance=ExtResource("9_raka")]
 position = Vector2(-250, 130)

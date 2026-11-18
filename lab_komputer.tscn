@@ -248,7 +248,7 @@ clue_title = "Hasil deteksi CCTV"
 clue_text = "Foto CCTV menampilkan seseorang duduk di ujung koridor, tetapi hasil model menyatakan ‘Tidak ada orang’. Foto tersebut berasal dari beberapa tahun lalu."
 
 [node name="MadingInteractable" type="Node2D" parent="Object"]
-position = Vector2(-884, -291)
+position = Vector2(-879, -67)
 script = ExtResource("28_interactable")
 target_name = "Mading"
 interaction_type = "clue"
@@ -257,7 +257,7 @@ clue_title = "Informasi mading"
 clue_text = "Informasi awal tentang Ardi, mahasiswa yang hilang bertahun-tahun lalu."
 
 [node name="LokerInteractable" type="Node2D" parent="Object"]
-position = Vector2(-330, -529)
+position = Vector2(-329, -287)
 script = ExtResource("28_interactable")
 target_name = "Loker"
 interaction_type = "clue"
@@ -266,24 +266,23 @@ clue_title = "Kartu mahasiswa Ardi"
 clue_text = "Kartu mahasiswa ini mengidentifikasi nama Ardi."
 
 [node name="LemariInteractable" type="Node2D" parent="Object"]
-position = Vector2(-660, -340)
+position = Vector2(-659, -122)
 script = ExtResource("28_interactable")
 target_name = "Lemari"
 interaction_type = "hide"
 
-[node name="PintuKeluarPortal" type="Node2D" parent="Object"]
-position = Vector2(-1182, -103)
+[node name="PintuKeluarPortal" type="Area2D" parent="Object"]
+position = Vector2(-1110, 45)
 script = ExtResource("31_portal")
 target_name = "pintu keluar utama"
 is_loop_exit = true
 
-[node name="PintuGudangPortal" type="Node2D" parent="Object"]
-position = Vector2(-59, -573)
+[node name="PintuGudangPortal" type="Area2D" parent="Object"]
+position = Vector2(-20, -370)
 script = ExtResource("31_portal")
 target_name = "pintu Gudang"
 destination_scene = "res://gudang.tscn"
 destination_spawn = "DariLabkom"
-required_clues = PackedStringArray("C1", "C2", "C3")
 
 [node name="Raka" type="CharacterBody2D" parent="." unique_id=512393967]
 script = ExtResource("23_1g52t")
@@ -307,34 +306,34 @@ zoom = Vector2(0.3, 0.3)
 
 [node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="CollosionObject" unique_id=1046155100]
 position = Vector2(-75, -21)
-polygon = PackedVector2Array(110, 17, 46, -20, 46, -47, -19, -84, -22, -82, -22, -60, -41, -71, -110, -31, -110, 74, -104, 75, -104, 85, -81, 96, -69, 102, -70, 104, -83, 105, -98, 113, -106, 122, -110, 132, -109, 141, -103, 149, -96, 155, -84, 160, -71, 163, -58, 163, -45, 161, -36, 158, -26, 153, -18, 141, -17, 127, 3, 137, 16, 145, 35, 156, 38, 159, 43, 162, 112, 123)
+polygon = PackedVector2Array(-110, 74, -41, 34, 112, 123, 43, 162, -71, 163, -110, 141)
 
 [node name="CollisionPolygon2D3" type="CollisionPolygon2D" parent="CollosionObject" unique_id=1024948915]
 position = Vector2(252, 183)
-polygon = PackedVector2Array(111, 16, 46, -20, 46, -47, -19, -84, -22, -82, -22, -60, -41, -71, -110, -31, -110, 74, -104, 75, -104, 85, -81, 96, -69, 102, -70, 104, -83, 105, -98, 113, -106, 122, -110, 132, -109, 141, -103, 149, -96, 155, -84, 160, -71, 163, -58, 163, -45, 161, -36, 158, -26, 153, -18, 141, -17, 127, 3, 137, 16, 145, 35, 156, 38, 159, 43, 162, 112, 123)
+polygon = PackedVector2Array(-110, 74, -41, 34, 112, 123, 43, 162, -71, 163, -110, 141)
 
 [node name="CollisionPolygon2D4" type="CollisionPolygon2D" parent="CollosionObject" unique_id=1444454694]
 position = Vector2(632, 404)
-polygon = PackedVector2Array(111, 16, 46, -20, 46, -47, -19, -84, -22, -82, -22, -60, -41, -71, -110, -31, -110, 74, -104, 75, -104, 85, -81, 96, -69, 102, -70, 104, -83, 105, -98, 113, -106, 122, -110, 132, -109, 141, -103, 149, -96, 155, -84, 160, -71, 163, -58, 163, -45, 161, -36, 158, -26, 153, -18, 141, -17, 127, 3, 137, 16, 145, 35, 156, 38, 159, 43, 162, 112, 123)
+polygon = PackedVector2Array(-110, 74, -41, 34, 112, 123, 43, 162, -71, 163, -110, 141)
 
 [node name="CollisionPolygon2D5" type="CollisionPolygon2D" parent="CollosionObject" unique_id=1485570735]
 position = Vector2(293, 617)
-polygon = PackedVector2Array(111, 16, 46, -20, 46, -47, -19, -84, -22, -82, -22, -60, -41, -71, -110, -31, -110, 74, -104, 75, -104, 85, -81, 96, -69, 102, -70, 104, -83, 105, -98, 113, -106, 122, -110, 132, -109, 141, -103, 149, -96, 155, -84, 160, -71, 163, -58, 163, -45, 161, -36, 158, -26, 153, -18, 141, -17, 127, 3, 137, 16, 145, 35, 156, 38, 159, 43, 162, 112, 123)
+polygon = PackedVector2Array(-110, 74, -41, 34, 112, 123, 43, 162, -71, 163, -110, 141)
 
 [node name="CollisionPolygon2D6" type="CollisionPolygon2D" parent="CollosionObject" unique_id=67902983]
 position = Vector2(-58, 413)
-polygon = PackedVector2Array(111, 16, 46, -20, 46, -47, -19, -84, -22, -82, -22, -60, -41, -71, -110, -31, -110, 74, -104, 75, -104, 85, -81, 96, -69, 102, -70, 104, -83, 105, -98, 113, -106, 122, -110, 132, -109, 141, -103, 149, -96, 155, -84, 160, -71, 163, -58, 163, -45, 161, -36, 158, -26, 153, -18, 141, -17, 127, 3, 137, 16, 145, 35, 156, 38, 159, 43, 162, 112, 123)
+polygon = PackedVector2Array(-110, 74, -41, 34, 112, 123, 43, 162, -71, 163, -110, 141)
 
 [node name="CollisionPolygon2D7" type="CollisionPolygon2D" parent="CollosionObject" unique_id=1682724665]
 position = Vector2(-375, 200)
-polygon = PackedVector2Array(111, 16, 46, -20, 46, -47, -19, -84, -22, -82, -22, -60, -41, -71, -110, -31, -110, 74, -104, 75, -104, 85, -81, 96, -69, 102, -70, 104, -83, 105, -98, 113, -106, 122, -110, 132, -109, 141, -103, 149, -96, 155, -84, 160, -71, 163, -58, 163, -45, 161, -36, 158, -26, 153, -18, 141, -17, 127, 3, 137, 16, 145, 35, 156, 38, 159, 43, 162, 112, 123)
+polygon = PackedVector2Array(-110, 74, -41, 34, 112, 123, 43, 162, -71, 163, -110, 141)
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="CollosionObject" unique_id=2086274101]
-polygon = PackedVector2Array(-814, 129, -866, 162, -867, 390, -769, 448, -715, 416, -716, 187)
+polygon = PackedVector2Array(-867, 390, -813, 358, -715, 416, -769, 448)
 
 [node name="CollisionPolygon2D8" type="CollisionPolygon2D" parent="CollosionObject" unique_id=1539432583]
 position = Vector2(1, 2)
-polygon = PackedVector2Array(-309, 419, -361, 452, -362, 680, -264, 738, -210, 706, -211, 477)
+polygon = PackedVector2Array(-362, 680, -308, 648, -210, 706, -264, 738)
 
 [node name="CollisionPolygon2D9" type="CollisionPolygon2D" parent="CollosionObject" unique_id=1503173090]
 polygon = PackedVector2Array(-609, -576, -707, -520, -707, -291, -654, -261, -556, -316, -556, -546)
@@ -359,10 +358,22 @@ script = ExtResource("29_gameplay_ui")
 [node name="Spawns" type="Node2D" parent="."]
 
 [node name="LoopReturn" type="Marker2D" parent="Spawns"]
-position = Vector2(0, 0)
+position = Vector2(-1081, -33)
 
 [node name="DariGudang" type="Marker2D" parent="Spawns"]
-position = Vector2(120, 250)
+position = Vector2(9, -448)
 
 [node name="DariStudio" type="Marker2D" parent="Spawns"]
-position = Vector2(300, 250)
+position = Vector2(9, -448)
+
+[node name="LemariDepan1Interactable" type="Node2D" parent="Object"]
+position = Vector2(-709, 508)
+script = ExtResource("28_interactable")
+target_name = "Lemari depan kiri"
+interaction_type = "hide"
+
+[node name="LemariDepan2Interactable" type="Node2D" parent="Object"]
+position = Vector2(-204, 798)
+script = ExtResource("28_interactable")
+target_name = "Lemari depan kanan"
+interaction_type = "hide"

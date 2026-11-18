@@ -1,59 +1,47 @@
-extends Node2D
-## Reusable E interaction for area doors and the LABKOM loop exit.
-
+﻿extends Area2D
+## Only a fresh E press activates a door; overlap never teleports the player.
 @export var target_name: String = "Pintu"
-@export var destination_scene: String = ""
+@export_file("*.tscn") var destination_scene: String = ""
 @export var destination_spawn: String = ""
-@export var required_clues: PackedStringArray = []
-@export var is_loop_exit: bool = false
+@export var is_loop_exit := false
 
 func _ready() -> void:
 	add_to_group("interactables")
+	collision_layer = 0
+	collision_mask = 1
+	var shape := CollisionShape2D.new()
+	var circle := CircleShape2D.new()
+	circle.radius = 160.0
+	shape.shape = circle
+	add_child(shape)
+
+func is_in_range(player: Node2D) -> bool:
+	return overlaps_body(player)
 
 func get_prompt() -> String:
 	return "[E] Gunakan " + target_name
 
-func interact(_player: Node) -> void:
-	if SceneTransition._transitioning:
-		return
+func interact(player: Node) -> void:
+	if SceneTransition._transitioning or not overlaps_body(player): return
 	var ui: Node = get_tree().get_first_node_in_group("gameplay_ui")
-	if ui != null and (bool(ui.get("inventory_open")) or bool(ui.get("pause_open"))):
-		return
-	if GameState.finale_phase in ["briefing", "chase"]:
-		if ui != null:
-			ui.call("show_message", "Ardi mendekat", "Cari lemari dan tekan E untuk bersembunyi.")
-		return
-	if GameState.finale_phase == "escape":
-		if is_loop_exit:
-			GameState.set_finale_phase("choice")
-			if ui != null: ui.call("show_finale", "choice")
-		elif ui != null:
-			ui.call("show_message", "Tujuan terakhir", "Gunakan pintu keluar utama LABKOM, bukan pintu antar-area.")
-		return
+	if ui != null and (bool(ui.get("inventory_open")) or bool(ui.get("pause_open"))): return
+	var finale: Node = get_tree().get_first_node_in_group("finale")
 	if is_loop_exit:
-		if not GameState.has_clue("C1"):
-			if ui != null:
-				ui.call("show_message", "Raka", "Periksa hasil training di laptop dulu sebelum pulang.")
+		if GameState.finale_phase == "chase" and finale != null:
+			if finale.try_escape():
+				GameState.set_finale_phase("choice")
+				ui.show_finale("choice")
+				return
+		if GameState.finale_phase == "escape":
+			GameState.set_finale_phase("choice")
+			ui.show_finale("choice")
 			return
 		GameState.record_loop()
+		if finale != null: finale.prepare_transfer(global_position)
 		SceneTransition.change_scene("res://lab_komputer.tscn", "LoopReturn")
 		return
-
-	if destination_scene == "res://gudang.tscn" and GameState.loop_count == 0:
-		if ui != null:
-			ui.call("show_message", "Raka", "Periksa laptop, lalu coba pintu keluar utama terlebih dahulu.")
-		return
-
-	var missing := GameState.get_missing_clues(required_clues)
-	if not missing.is_empty():
-		var clue_names := PackedStringArray()
-		for clue_id in missing:
-			clue_names.append(GameState.get_clue_name(clue_id))
-		if ui != null:
-			ui.call("show_message", "Jalur belum terbuka", "Periksa dulu: " + ", ".join(clue_names))
-		return
-
 	if destination_scene.is_empty():
-		push_warning("Portal '%s' has no destination scene." % target_name)
+		push_warning("Portal has no destination: " + name)
 		return
+	if finale != null: finale.prepare_transfer(global_position)
 	SceneTransition.change_scene(destination_scene, destination_spawn)

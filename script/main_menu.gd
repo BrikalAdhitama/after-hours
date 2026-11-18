@@ -1,6 +1,6 @@
 extends Control
 
-const HOME_PAGE: Texture2D = preload("res://assets/ui/HOME PAGE.png")
+const HOME_PAGE: Texture2D = preload("res://assets/ui/HOME PAGE (1).png")
 const Layout = preload("res://script/ui_layout.gd")
 var _stage: Control
 var _starting := false

@@ -5,6 +5,7 @@ const Layout = preload("res://script/ui_layout.gd")
 const Story = preload("res://script/story_data.gd")
 const DocumentReader = preload("res://script/evidence_reader.gd")
 const FinaleScreen = preload("res://script/finale_screen.gd")
+const Investigation = preload("res://script/investigation_data.gd")
 const PORTRAITS := {
 	"neutral": preload("res://assets/ilustrasi/IMG_3827.PNG"),
 	"surprised": preload("res://assets/ilustrasi/IMG_3830.PNG"),
@@ -15,12 +16,13 @@ const PORTRAITS := {
 const INVENTORY_ICON = preload("res://assets/button-dan-logo/INVENTORY BUTTON.png")
 const PAUSE_ICON = preload("res://assets/button-dan-logo/PAUSE BUTTON.png")
 const BACK_BUTTON = preload("res://assets/button-dan-logo/BACK.png")
-const MADING = preload("res://assets/ui/MADING AJA.png")
-const LOKER = preload("res://assets/ui/LOKER + BUKU.png")
+const MADING = preload("res://assets/ui/MADING AJA (1).png")
+const LOKER = preload("res://assets/ui/LOKER + BUKU (1).png")
+const LAPTOP = preload("res://assets/ui/LAPTOP.png")
 const PAUSE_PATHS := {
-	"labkom": "res://assets/ui/LABKOM PAUSE.png",
-	"gudang": "res://assets/ui/GUDANG PAUSE.png",
-	"studio_desain": "res://assets/ui/STUDIO PAUSE.png",
+	"labkom": "res://assets/ui/LABKOM PAUSE (1).png",
+	"gudang": "res://assets/ui/GUDANG PAUSE (1).png",
+	"studio_desain": "res://assets/ui/STUDIO PAUSE (1).png",
 }
 var clues: Array[Dictionary] = []
 var inventory_open := false
@@ -62,6 +64,13 @@ var _finale_screen: Control
 var _vignette: TextureRect
 var _guidance_label: Label
 var _inventory_goal: Label
+var _pending_clue: Dictionary = {}
+var _finale_mode := ""
+var _deduction_feedback := ""
+var _case_return := false
+var _jumpscare: Control
+var _dialogue_art: TextureRect
+var _dialogue_context := ""
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -103,7 +112,7 @@ func _process(delta: float) -> void:
 func _set_mode(mode: String) -> void:
 	_mode = mode
 	# Compatibility with Raka's existing movement/interactions lock.
-	inventory_open = mode in ["inventory", "evidence", "dialogue", "document", "finale"]
+	inventory_open = mode in ["inventory", "evidence", "dialogue", "document", "finale", "jumpscare"]
 	pause_open = mode == "pause"
 	get_tree().paused = pause_open
 	_hud.visible = mode == "play"
@@ -111,6 +120,7 @@ func _set_mode(mode: String) -> void:
 	_shade.color.a = 0.35 if mode == "dialogue" else 0.98
 	_dialogue_panel.visible = mode == "dialogue"
 	_dialogue_portrait.visible = mode == "dialogue" and _dialogue_portrait.texture != null
+	_dialogue_art.visible = mode == "dialogue" and _dialogue_context == "C1"
 	_document_reader.visible = mode == "document"
 	_inventory_panel.visible = mode == "inventory"
 	_evidence_overlay.visible = mode == "evidence"
@@ -121,6 +131,9 @@ func _set_mode(mode: String) -> void:
 	_message_panel.hide()
 
 func toggle_inventory() -> void:
+	if _mode == "finale" and _finale_mode == "deduction":
+		_finale_action("case_read")
+		return
 	if _busy or pause_open or _mode in ["dialogue", "finale"] or SceneTransition._transitioning:
 		return
 	if GameState.finale_phase == "chase":
@@ -146,6 +159,9 @@ func toggle_pause() -> void:
 func handle_escape() -> void:
 	if _busy:
 		return
+	if _mode == "finale" and _finale_mode == "deduction":
+		_finale_action("case_back")
+		return
 	if pause_open:
 		toggle_pause()
 	elif _mode == "dialogue":
@@ -164,6 +180,10 @@ func close_overlay() -> void:
 	if _mode == "evidence":
 		_set_mode(_evidence_return_mode)
 		return
+	if _mode == "inventory" and _case_return:
+		_case_return = false
+		show_finale("deduction")
+		return
 	_set_mode("play")
 	_return_mode = "play"
 
@@ -177,18 +197,26 @@ func add_clue(clue_id: String, title: String, body: String) -> void:
 	if not blocked.is_empty():
 		show_message("Raka", blocked)
 		return
+	if clue_id == "C6" and not GameState.has_clue("C6") and GameState.deduction_step < Investigation.QUESTIONS.size():
+		_pending_clue = {"id": clue_id, "title": title, "body": body}
+		_deduction_feedback = ""
+		show_finale("deduction")
+		return
+	var already_collected := GameState.has_clue(clue_id)
 	GameState.add_clue(clue_id, title, body)
 	clues = GameState.clues.duplicate(true)
-	if clue_id in ["C2", "C3"]:
+	if clue_id in ["C2", "C3"] or (clue_id == "C1" and already_collected):
 		_show_evidence(clue_id, title, body, "play")
 	else:
-		show_dialogue(Story.clue_lines(clue_id, title, body))
+		show_dialogue(Story.clue_lines(clue_id, title, body), clue_id)
 
 func _show_evidence(clue_id: String, title: String, body: String, return_mode: String) -> void:
 	_evidence_return_mode = return_mode
-	_evidence_background.texture = MADING if clue_id == "C2" else LOKER
+	_evidence_background.texture = LAPTOP if clue_id == "C1" else (MADING if clue_id == "C2" else LOKER)
 	_evidence_title.text = title
 	_evidence_body.text = body + ("\nKlik poster untuk membaca lebih dekat." if clue_id == "C2" else "\nKlik buku merah untuk membaca diary.")
+	if clue_id == "C1":
+		_evidence_body.text = body + "\nKlik foto atau kartu untuk memperbesar lampiran. Back / Esc untuk kembali."
 	for child in _evidence_targets.get_children():
 		_evidence_targets.remove_child(child)
 		child.queue_free()
@@ -197,12 +225,36 @@ func _show_evidence(clue_id: String, title: String, body: String, return_mode: S
 	var factor := minf(_evidence_background.size.x / texture_size.x, _evidence_background.size.y / texture_size.y)
 	_evidence_targets.size = texture_size * factor
 	_evidence_targets.position = _evidence_background.position + (_evidence_background.size - _evidence_targets.size) * 0.5
-	if clue_id == "C2":
+	if clue_id == "C1":
+		_evidence_target(Rect2(0.14, 0.15, 0.31, 0.34), "student_card", "Perbesar lampiran kartu mahasiswa")
+		_evidence_target(Rect2(0.46, 0.30, 0.38, 0.34), "ardi_photo", "Perbesar foto Ardi")
+		_evidence_target(Rect2(0.48, 0.12, 0.02, 0.03), "student_card", "Perbesar jendela kartu")
+		_evidence_button(Rect2(0.50, 0.12, 0.02, 0.03), close_overlay, "Tutup pemeriksaan laptop")
+		_evidence_target(Rect2(0.80, 0.26, 0.02, 0.04), "ardi_photo", "Perbesar jendela foto")
+		_evidence_button(Rect2(0.82, 0.26, 0.02, 0.04), close_overlay, "Tutup pemeriksaan laptop")
+		_evidence_button(Rect2(0.75, 0.72, 0.05, 0.04), _confirm_evidence_saved, "Petunjuk sudah tersimpan di inventori sesi ini")
+		_evidence_button(Rect2(0.81, 0.72, 0.04, 0.04), close_overlay, "Lewati pemeriksaan lampiran")
+		_evidence_button(Rect2(0.86, 0.72, 0.04, 0.04), close_overlay, "Kembali")
+	elif clue_id == "C2":
 		_evidence_target(Rect2(0.25, 0.34, 0.16, 0.37), "missing", "Baca poster orang hilang")
 		_evidence_target(Rect2(0.41, 0.30, 0.16, 0.40), "ktm", "Baca pengumuman KTM")
 	else:
 		_evidence_target(Rect2(0.39, 0.64, 0.13, 0.33), "diary", "Baca diary")
+		# C3 is already collected by opening the locker; this only reads its artwork.
+		var card := Button.new()
+		card.text = "Lihat kartu mahasiswa"
+		card.size = Vector2(390, 65)
+		card.add_theme_font_size_override("font_size", 26)
+		card.pressed.connect(open_document.bind("student_card"))
+		_evidence_targets.add_child(card)
+		card.position = Vector2(1330, 710) - _evidence_targets.position
 	_set_mode("evidence")
+
+func _confirm_evidence_saved() -> void:
+	_evidence_body.text = "Hasil pemeriksaan sudah dicatat di inventori sesi ini. Klik foto atau kartu untuk memperbesar, atau Back / Esc untuk kembali."
+
+func _evidence_button(rect: Rect2, action: Callable, hint: String) -> void:
+	_hotspot(_evidence_targets, Rect2(rect.position * _evidence_targets.size, rect.size * _evidence_targets.size), action, hint)
 
 func _evidence_target(rect: Rect2, id: String, hint: String) -> void:
 	_hotspot(_evidence_targets, Rect2(rect.position * _evidence_targets.size, rect.size * _evidence_targets.size), open_document.bind(id), hint)
@@ -223,10 +275,11 @@ func play_story_event(event_id: String) -> void:
 	if not lines.is_empty() and GameState.claim_story_event(event_id):
 		show_dialogue(lines)
 
-func show_dialogue(lines: Array) -> void:
+func show_dialogue(lines: Array, context: String = "") -> void:
 	if lines.is_empty():
 		return
 	_dialogue_lines = lines.duplicate(true)
+	_dialogue_context = context
 	_dialogue_index = 0
 	_set_mode("dialogue")
 	_refresh_dialogue()
@@ -260,6 +313,11 @@ func advance_dialogue() -> void:
 	if _dialogue_index >= _dialogue_lines.size():
 		_dialogue_lines.clear()
 		_set_mode("play")
+		if _dialogue_context == "C1":
+			for clue in GameState.clues:
+				if str(clue["id"]) == "C1":
+					_show_evidence("C1", str(clue["title"]), str(clue["body"]), "play")
+		_dialogue_context = ""
 		dialogue_finished.emit()
 	else:
 		_refresh_dialogue()
@@ -272,8 +330,8 @@ func _refresh_progress() -> void:
 func _update_guidance() -> void:
 	var player := get_tree().current_scene.get_node_or_null("Raka")
 	if player == null: return
-	if GameState.finale_phase == "chase" and bool(player.get("is_hidden")):
-		_guidance_label.text = "Tetap bersembunyi... %d detik. Jangan tekan E dulu." % maxi(1,GameState.hidden_seconds)
+	if GameState.finale_phase == "chase":
+		_guidance_label.text = GameState.pursuit_status + (" [E] Keluar dari lemari." if bool(player.get("is_hidden")) else "")
 		return
 	var path := GameState.get_target_path()
 	var target := get_tree().current_scene.get_node_or_null(path) as Node2D if not path.is_empty() else null
@@ -289,21 +347,59 @@ func _update_guidance() -> void:
 		_guidance_label.text = "Arah tujuan: " + (vertical if absf(delta.x) < 80 else (horizontal if absf(delta.y) < 80 else horizontal + " " + vertical))
 
 func show_finale(mode: String) -> void:
-	_finale_screen.call("present", mode)
+	_finale_mode = mode
+	_finale_screen.call("present", mode, _deduction_feedback if mode == "deduction" else "")
 	_set_mode("finale")
+
+func show_jumpscare() -> void:
+	if _mode == "jumpscare" or GameState.finale_phase != "caught": return
+	_busy = true
+	_set_mode("jumpscare")
+	_jumpscare.play()
+
+func _jumpscare_finished() -> void:
+	if _mode != "jumpscare": return
+	_busy = false
+	show_finale("caught")
 
 func _finale_action(action: String) -> void:
 	if _busy or _mode != "finale": return
+	if _finale_mode == "deduction":
+		if action == "case_read":
+			_rebuild_inventory()
+			_case_return = true
+			_set_mode("inventory")
+		elif action == "case_back":
+			_pending_clue.clear()
+			_case_return = false
+			_set_mode("play")
+		elif action.begins_with("case_answer_") and not _pending_clue.is_empty():
+			var answer := int(action.trim_prefix("case_answer_"))
+			if Investigation.is_correct(GameState.deduction_step,answer):
+				GameState.deduction_step += 1
+				_deduction_feedback = ""
+				if GameState.deduction_step == Investigation.QUESTIONS.size():
+					var clue := _pending_clue.duplicate()
+					_pending_clue.clear()
+					_set_mode("play")
+					add_clue(str(clue["id"]),str(clue["title"]),str(clue["body"]))
+				else:
+					show_finale("deduction")
+			else:
+				_deduction_feedback = str(Investigation.QUESTIONS[GameState.deduction_step]["hint"])
+				show_finale("deduction")
+		return
 	match action:
 		"wait", "leave":
 			if GameState.finale_phase != "choice": return
 			GameState.choose_ending(action)
 			show_finale("ending")
 		"retry":
+			if _finale_mode != "caught": return
 			if not GameState.restore_chase_checkpoint(): return
 			_busy = true
 			_set_mode("play")
-			SceneTransition.change_scene("res://lab_komputer.tscn", "")
+			SceneTransition.change_scene(str(GameState.checkpoint["scene"]), "")
 		"restart":
 			_restart_run()
 		"menu":
@@ -324,7 +420,7 @@ func _build_ui() -> void:
 	add_child(_shade)
 	_screen = Layout.new()
 	add_child(_screen)
-	_vignette = _texture(_screen, preload("res://assets/ui/EFEK VIGNETTE.png"), Rect2(0,0,1920,1080))
+	_vignette = _texture(_screen, preload("res://assets/ui/EFEK VIGNETTE (1).png"), Rect2(0,0,1920,1080))
 	_vignette.modulate.a = 0.25
 	_hud = _control(_screen, Rect2(0, 0, 1920, 1080))
 	var help := _label("E  Interaksi     I  Inventori     Esc  Jeda", 26)
@@ -392,6 +488,7 @@ func _build_ui() -> void:
 	_document_reader = DocumentReader.new()
 	_screen.add_child(_document_reader)
 	_document_reader.connect("closed", close_overlay)
+	_dialogue_art = _texture(_screen, LAPTOP, Rect2(590, 80, 1150, 600))
 	_dialogue_portrait = _texture(_screen, null, Rect2(90, 210, 500, 500))
 	_dialogue_panel = _panel(_screen, Rect2(200, 710, 1520, 330))
 	var dialogue := VBoxContainer.new()
@@ -419,6 +516,9 @@ func _build_ui() -> void:
 	_finale_screen = FinaleScreen.new()
 	_screen.add_child(_finale_screen)
 	_finale_screen.connect("action_selected", _finale_action)
+	_jumpscare = preload("res://script/jumpscare_player.gd").new()
+	add_child(_jumpscare)
+	_jumpscare.connect("completed", _jumpscare_finished)
 	_rebuild_inventory()
 
 func _inventory_from_pause() -> void:
@@ -502,9 +602,10 @@ func _rebuild_inventory() -> void:
 		var entry := VBoxContainer.new()
 		entry.add_child(_label(str(clue["id"]) + " - " + str(clue["title"]), 30))
 		entry.add_child(_label(str(clue["body"]), 26))
-		if str(clue["id"]) in ["C2", "C3"]:
+		if str(clue["id"]) in ["C1", "C2", "C3"]:
 			var inspect := Button.new()
 			inspect.text = "Buka mading / poster" if str(clue["id"]) == "C2" else "Buka loker / diary"
+			if str(clue["id"]) == "C1": inspect.text = "Buka laptop / lampiran"
 			inspect.custom_minimum_size.y = 60
 			inspect.add_theme_font_size_override("font_size", 26)
 			inspect.pressed.connect(_inspect_saved_clue.bind(clue))

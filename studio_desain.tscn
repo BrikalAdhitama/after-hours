@@ -200,13 +200,12 @@ clue_id = "C6"
 clue_title = "Dokumentasi tentang Ardi"
 clue_text = "Dokumentasi ini mengonfirmasi bahwa Ardi hilang setelah tertinggal sendirian di gedung dan terjebak dalam pengulangan malam yang sama."
 
-[node name="PintuKembali" type="Node2D" parent="."]
+[node name="PintuKembali" type="Area2D" parent="."]
 position = Vector2(-1250, 60)
 script = ExtResource("17_portal")
-target_name = "pintu kembali ke LABKOM"
-destination_scene = "res://lab_komputer.tscn"
+target_name = "pintu kembali ke Gudang"
+destination_scene = "res://gudang.tscn"
 destination_spawn = "DariStudio"
-required_clues = PackedStringArray("C6")
 
 [node name="Raka" parent="." instance=ExtResource("14_raka")]
 position = Vector2(-1250, 60)
@@ -232,3 +231,9 @@ polygon = PackedVector2Array(1425.296, 244.521, 173.704, 965.479, 218.626, 1043.
 
 [node name="Sisi4" type="CollisionPolygon2D" parent="BatasLantai"]
 polygon = PackedVector2Array(215.238, 965.58, -1426.238, 9.42, -1471.538, 87.188, 169.938, 1043.348)
+
+[node name="LemariInteractable" type="Node2D" parent="."]
+position = Vector2(-600, -210)
+script = ExtResource("15_interactable")
+target_name = "Lemari Studio"
+interaction_type = "hide"

@@ -26,7 +26,7 @@ func interact(player: Node) -> void:
 				ui.call("add_clue", clue_id, clue_title, clue_text)
 		"hide":
 			if player.has_method("enter_hide"):
-				player.enter_hide()
+				player.enter_hide(self)
 		_:
 			var ui: Node = get_tree().get_first_node_in_group("gameplay_ui")
 			if ui != null:

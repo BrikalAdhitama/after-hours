@@ -8,6 +8,9 @@ extends CharacterBody2D
 @onready var body_shape: CollisionShape2D = $CollisionShape2D
 
 var is_hidden: bool = false
+var hiding_spot: Node2D
+var _hide_exit := Vector2.ZERO
+var _hide_entry := Vector2.ZERO
 
 func _ready() -> void:
 	motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
@@ -26,7 +29,7 @@ func _process(_delta: float) -> void:
 
 func _physics_process(_delta: float) -> void:
 	var ui: Node = _get_gameplay_ui()
-	if is_hidden or (ui != null and bool(ui.get("inventory_open"))):
+	if is_hidden or SceneTransition._transitioning or (ui != null and bool(ui.get("inventory_open"))):
 		velocity = Vector2.ZERO
 		move_and_slide()
 		return
@@ -85,7 +88,7 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 		return
 
-	if keycode != KEY_E or (ui != null and bool(ui.get("inventory_open"))):
+	if keycode != KEY_E or SceneTransition._transitioning or (ui != null and bool(ui.get("inventory_open"))):
 		return
 
 	if is_hidden:
@@ -101,9 +104,15 @@ func _input(event: InputEvent) -> void:
 		ui.call("show_message", "Belum ada objek untuk diperiksa", "Dekati objek sampai prompt [E] muncul.")
 		get_viewport().set_input_as_handled()
 
-func enter_hide() -> void:
+func enter_hide(spot: Node2D = null) -> void:
 	if is_hidden:
 		return
+	_hide_entry = body_shape.global_position
+	_hide_exit = spot.global_position if spot != null else _hide_entry
+	if not _feet_clear(_hide_exit):
+		_hide_exit = _hide_entry
+	if not _feet_clear(_hide_exit): return
+	hiding_spot = spot
 	is_hidden = true
 	sprite.visible = false
 	velocity = Vector2.ZERO
@@ -114,11 +123,29 @@ func enter_hide() -> void:
 func exit_hide() -> void:
 	if not is_hidden:
 		return
+	# Recheck physics: never emerge inside furniture, even if an obstacle moved.
+	var safe := false
+	for point in [_hide_exit, _hide_entry, _hide_exit + Vector2(40,0), _hide_exit + Vector2(-40,0), _hide_exit + Vector2(0,40)]:
+		if _feet_clear(point):
+			global_position += point - body_shape.global_position
+			safe = true
+			break
+	if not safe: return
 	is_hidden = false
+	hiding_spot = null
 	sprite.visible = true
 	var ui: Node = _get_gameplay_ui()
 	if ui != null:
 		ui.call("show_message", "Lemari", "Raka keluar dari lemari.")
+
+func _feet_clear(point: Vector2) -> bool:
+	var query := PhysicsShapeQueryParameters2D.new()
+	query.shape = body_shape.shape
+	query.transform = body_shape.global_transform
+	query.transform.origin = point
+	query.collision_mask = collision_mask
+	query.exclude = [get_rid()]
+	return get_world_2d().direct_space_state.intersect_shape(query).is_empty()
 
 func _find_nearest_interactable() -> Node2D:
 	var interaction_origin := body_shape.global_position
@@ -126,6 +153,8 @@ func _find_nearest_interactable() -> Node2D:
 	var nearest_distance := interaction_range
 	for candidate in get_tree().get_nodes_in_group("interactables"):
 		if not is_instance_valid(candidate) or not candidate is Node2D:
+			continue
+		if candidate.has_method("is_in_range") and not candidate.is_in_range(self):
 			continue
 		var distance: float = interaction_origin.distance_to(candidate.global_position)
 		if distance <= nearest_distance:

@@ -1,128 +1,74 @@
-# Alur cerita — investigasi sampai dua ending
+﻿# Implementasi revisi gameplay — 17 November 2026
 
-Status: alur dasar dapat dimainkan sampai dua ending. Pengejaran pertama memakai mekanik sederhana yang masih perlu penyesuaian kesulitan lewat playtest.
-Sumber utama: `D:/AfterHours/GDD Kel 1 (1) (1).pdf`, terutama halaman 2–3.
-Keputusan percakapan pengguna mengatur penempatan clue, urutan ruangan, loker untuk petunjuk, lemari untuk sembunyi, dan loop hanya pada pintu utama.
+Acuan cerita: `D:/AfterHours/GDD Kel 1 (1) (1).pdf`. Revisi pengguna terbaru mengganti batas pengejaran dalam lampiran: **mulai di Studio, lalu Ardi dapat mengikuti ke semua ruangan**. Loker tetap untuk petunjuk, lemari untuk persembunyian, dan loop hanya di pintu utama.
 
-## Alur yang dapat dimainkan
+## Perubahan yang diterapkan
 
-| Peristiwa | Pemicu | Tujuan berikutnya |
-| --- | --- | --- |
-| Pembukaan di LABKOM | Start Game atau Restart | Periksa hasil training di laptop |
-| C1: anomali CCTV | E di laptop; baca sampai Selesai | Coba pintu keluar utama |
-| Loop pertama | E di pintu utama sesudah C1 | Periksa mading dan loker |
-| C2: informasi Ardi; C3: kartu mahasiswa | E di mading/loker, urutan keduanya bebas | Masuk Gudang |
-| Tiba di Gudang | C1–C3 dan loop pertama sudah dilalui | Cari rekaman suara dan catatan lama |
-| C4: transkrip; C5: catatan lama | E di lokasi petunjuk Gudang, urutan bebas | Masuk Studio Desain |
-| C6: dokumentasi | E di dokumentasi Studio | Kembali ke LABKOM |
-| Kembali ke LABKOM | C6 terkumpul | Refleksi Raka, kemunculan Ardi, checkpoint sebelum pengejaran |
-| Pengejaran | Dialog pertemuan selesai | Hindari Ardi, dekati lemari dan tekan E |
-| Bersembunyi | Raka berada di dalam lemari selama 5 detik | Tekan E untuk keluar, lalu menuju pintu keluar utama |
-| Pintu terakhir | Ancaman sudah dilewati; E di pintu utama | Pilih menunggu Ardi atau pulang sendirian |
-| Akhirnya Pulang | Pilih menunggu | Raka dan Ardi pulang bersama |
-| Pulang | Pilih pulang sendirian | Ardi tertinggal dalam pengulangan malam |
+| File | Perubahan |
+| --- | --- |
+| `lab_komputer.tscn` | Collider enam meja komputer dan dua lemari depan mengikuti pijakan; dua titik persembunyian depan; titik interaksi mading/loker/lemari dan pintu digeser ke sisi lantai yang terjangkau; marker spawn di dekat pintu. Posisi/ukuran/tekstur seluruh sprite dan kamera dipertahankan. |
+| `gudang.tscn` | Kedua portal menjadi Area2D; syarat clue pintu dihapus. Layout dan collision dipertahankan. |
+| `studio_desain.tscn` | Portal Area2D menuju Gudang sebagai pasangan rute masuk; syarat clue pintu dihapus; marker persembunyian di depan lemari yang sudah ada. Layout/collision dipertahankan. |
+| `script/portal.gd` | Area2D lingkaran radius 160, overlap Raka + E, bebas clue gate, fade yang sudah ada, meneruskan pengejaran lewat pintu dan menguji pintu akhir. |
+| `script/room_controller.gd` | Spawn berdasar kaki, bukan origin body LABKOM yang bergeser (454,-15); controller pengejaran di tiap ruangan; poligon lantai aktual untuk sampling navigasi. |
+| `script/raka.gd` | Validasi jangkauan Area pintu, kunci input/gerak selama fade, simpan titik keluar lemari dan cek capsule physics sebelum keluar. Rumus movement/orientasi, animasi, dan kamera dipertahankan. |
+| `script/interactable.gd` | Sistem hide reusable yang sama menerima lemari sumber. |
+| `script/game_state.gd` | Objective bebas pintu; C6 memerlukan bukti C1–C5; trigger Studio; status/transisi ancaman; checkpoint menyimpan scene, posisi, clue, event, loop, dan deduksi. Timer kemenangan bersembunyi lama dihapus. |
+| `script/ardi_chase.gd` | Navigasi AStar2D dibangun dari capsule sweep dan collision tiap ruangan. State CHASE/SEARCH/PATROL (IDLE jika tidak ada jalur), target terakhir hanya diperbarui saat benar-benar melihat Raka. Repath tidak menarik Ardi mundur ke titik grid lama. |
+| `script/finale_controller.gd` | Trigger sekali pada progres Studio, checkpoint sebelum ancaman, kedatangan lintas ruangan, pencarian aktif saat sembunyi, kondisi lolos, penangkapan sekali. |
+| `script/gameplay_ui.gd` | Status ancaman, modal jumpscare, retry ke checkpoint Studio, memakai UI lama. |
+| `script/jumpscare_player.gd` | VideoStreamPlayer pada CanvasLayer UI, rasio dipertahankan, finished ke Game Over, fallback ilustrasi jika aset tidak tersedia/stall. |
+| `script/finale_screen.gd` | Game Over: COBA LAGI / MENU UTAMA. Ending: Tunggu Ardi / Pergi Sendiri. |
+| `script/story_data.gd` | Percakapan pemicu dipindah ke Studio; arahan awal/antar-area sesuai pintu bebas, tanpa penambahan fakta masa lalu Ardi. |
+| `tests/*_check.gd` | Tes akses/lemari, AI lintas ruangan, story/UI, video/checkpoint/ending sesuai aturan terbaru. |
 
-Sebelum waktunya, interaksi clue LABKOM/pintu memberi arahan tertulis.
-Petunjuk tetap dapat dibaca ulang. Loop berikutnya mempertahankan clue dan tidak mengulang dialog pembukaan/loop pertama.
-Penanda waktu HUD menjadi **22.17 — Jam berhenti** setelah loop pertama; sprite jam dinding belum dianimasikan.
-C6 tidak langsung memutus loop; C6 membuka pertemuan terakhir setelah kembali ke LABKOM. Saat ancaman aktif, pintu mengarahkan pemain mencari lemari. Setelah lolos, pintu utama membuka keputusan akhir. Tidak ada lagi objective buntu yang hanya meminta membaca inventori.
+Garis diagonal depan LABKOM mengikuti tepi lantai isometrik dan dipertahankan. Keempat sisi diuji menggunakan gerakan capsule. Collider furnitur yang masih berfungsi dan layout manual tidak dibuang. PNG tidak diubah. SceneTransition fade yang sudah ada digunakan kembali; tidak ada plugin, musik, commit, atau push baru.
 
-## Penyajian dan kontrol
+## Aturan runtime
 
-- Dialog native Control memakai panel bawah di UI yang sudah ada; ruangan tetap terlihat.
-- E, Enter, Space, atau tombol Lanjut/Selesai melanjutkan dialog. Teks tidak hilang karena timer.
-- Gerakan dan interaksi dunia terkunci selama dialog, memakai penguncian modal yang sudah dikenali Raka.
-- Esc menjeda dialog; Continue melanjutkan halaman yang sama. I tidak membuang percakapan.
-- Pemeriksaan mading/loker tetap memakai aset tim dan inventori yang sudah ada.
-- Musik/audio tidak ditambahkan; rekaman suara masih berupa transkrip sementara.
-- Progres bertahan sepanjang sesi dan perpindahan scene; belum ada save/load ke disk.
-- HUD memberi arah menuju objek tujuan. Inventori menampilkan langkah berikutnya dan cara menutup inventori.
-- Selama pengejaran, I tidak membuka inventori. Gunakan Esc untuk menjeda; timer persembunyian dan Ardi ikut berhenti.
-- Jika tertangkap, pilih Ulangi dari checkpoint untuk mengulang dari sebelum pengejaran. Pilihan Restart dari pause atau Main lagi dari awal pada ending memulai run baru.
+- Rute pintu berpasangan: LABKOM ↔ Gudang ↔ Studio. Marker menyatakan posisi kaki dalam koordinat room, memperhitungkan parent dan offset shape LABKOM.
+- Tidak ada teleport dari body_entered. Hanya E baru; echo ditolak dan fade mengunci kontrol. Radius Area 160 konsisten dengan jangkauan interaksi Raka 180.
+- C1–C6, loop pertama, dan penyelesaian dialog investigasi di Studio memulai ancaman. Kunjungan Studio awal aman. C6 tidak memutus loop.
+- Ardi bergerak 155 saat mengejar, 125 saat mencari, 85 saat patroli; Raka tetap 180. Deteksi memakai jarak 360 dan ray tanpa halangan. Navigasi sampling 40 unit; node dan koneksi diuji dengan collision capsule.
+- Saat tersembunyi, sprite Raka disembunyikan dan tidak menjadi target deteksi/tangkap. Ardi tetap menuju posisi terakhir yang terlihat, mencari, lalu patroli setelah 9 detik tanpa sight. Posisi tersembunyi tidak memperbarui ingatannya. Setelah keluar, sight dapat memulai CHASE kembali.
+- Pindah ruangan menyimpan status dan waktu tempuh; Ardi muncul di dekat pintu masuk tujuan setelah 2,5–7 detik. Ia mencari titik masuk, bukan koordinat pemain yang terus bergerak. Tidak ada reset investigasi/pengejaran setiap masuk Studio.
+- Lolos: di LABKOM, Ardi sudah tiba, berada dalam PATROL, dan tidak melihat Raka ketika E pada pintu utama. Jika belum, pintu mengulang LABKOM beserta ancamannya. Ketika lolos, ancaman berhenti dan kedua pilihan ending dibuka.
+- Tertangkap: phase caught segera mencegah tangkap ganda, video mengunci kontrol sampai finished, kemudian Game Over. Retry memulihkan checkpoint Studio beserta semua petunjuk. Ending tidak dipicu oleh tangkap.
+- Save/checkpoint masih di memori sesi; belum menyimpan ke disk.
 
-## Teks yang bersumber dari GDD
+Durasi pencarian, kecepatan, jeda kedatangan, radius deteksi, dan kriteria lolos adalah parameter implementasi untuk playtest, bukan fakta cerita dari GDD. Dialog penghubung tetap draf. Tidak ada cerita kematian/identitas baru yang ditambahkan.
 
-Fakta yang dipertahankan: Raka mengerjakan model deteksi orang; CCTV memperlihatkan seseorang tetapi hasilnya “Tidak ada orang”; foto berasal dari beberapa tahun lalu; laboratorium berulang; jam 22.17; telepon tidak mendapat sinyal; Ardi hilang setelah tertinggal di gedung dan terjebak pada pengulangan malam tersebut; ia meminta untuk ditunggu.
+## Video yang benar-benar tersedia
 
-Monolog pembuka memakai kalimat pengguna: “Akhirnya selesai juga training-nya. Ambil laptop, terus pulang.”
+Audit filesystem terbaru menemukan `assets/ilustrasi/Karya_Seni_Tanpa_Judul.ogv`, bukan MP4 yang disebut dalam audit lama. FFprobe dari instalasi lokal memverifikasi container **ogg**, codec **theora**, **3520×2488**, **12 fps**, **2,916667 detik**, **159.218 byte**, satu stream video dan **tanpa stream audio**. Jadi file ini bukan MP4 yang hanya diganti ekstensi. Tidak perlu konversi; file sumber tidak diubah/dihapus. Program pemeriksa diekstrak dari paket FFmpeg Android Studio yang sudah terpasang ke direktori validasi di luar project, tanpa download/dependency runtime.
 
-## Draf yang perlu review penulisan
+VideoStreamPlayer Godot berhasil memuat dan memutar sampai sinyal finished. Fallback `IMG_3842.PNG` selama 1,8 detik diuji dengan path video yang sengaja tidak ada; watchdog 8 detik mencegah layar macet jika pemutaran rusak. Video memakai rasio asli di atas latar hitam, terikat viewport dan tidak mengikuti Camera2D.
 
-Dialog penghubung di `script/story_data.gd` adalah draf implementasi, bukan kutipan verbatim GDD:
-- Reaksi Raka pada CCTV dan loop pertama.
-- Arahan pemeriksaan mading/loker, Gudang, dan Studio.
-- Reaksi pada C4–C6 dan refleksi sesudah kembali ke LABKOM.
+## Validasi dan batasnya
 
-Isi C1–C6 tetap berasal dari teks clue yang sudah ada pada scene. Teks catatan, dokumentasi, dan transkrip belum merupakan naskah final lengkap. Tidak ditambahkan nama baru, tanggal kejadian pasti, identitas pelaku, atau sebab kematian.
+Godot **4.7.2**, headless:
 
-## Pengejaran dan batas implementasi
+- `tests/revision_access_check.gd`: geometri spawn, flood-fill akses interaksi di tiga ruangan, empat batas lantai per ruangan, portal tanpa clue, E tanpa teleport berulang, semua lemari masuk/keluar aman dan tahan key echo.
+- `tests/revision_chase_check.gd`: Studio awal tidak memicu ancaman; C6 memicu saat sudah di dalam; navigasi tiap ruangan; pencarian/patroli tetap bergerak; tidak melacak posisi tersembunyi; deteksi ulang; status mengikuti Studio → Gudang → LABKOM.
+- `tests/story_flow_check.gd`: main menu, C1–C6, loop, diary/poster, portrait laptop/dialog, inventori, deduksi, transisi, reset, viewport.
+- `tests/finale_flow_check.gd`: proximity catch, video native benar-benar advancing/finished, input lock, fallback, klik Game Over, checkpoint Studio, loop saat belum lolos, jalan ke pintu terakhir dengan move_and_slide, klik kedua ending, restart.
+- `tests/gudang_physics_check.gd` (normal dan `--studio`): footprint furnitur, batas lantai, akses central aisle.
 
-Ardi memakai tiga PNG cimol yang sudah tersedia. Jalur dibentuk dari hasil pemeriksaan capsule terhadap collision LABKOM yang sebenarnya. Kecepatan awal Ardi 135 world units/detik, lebih lambat dari Raka (180); spawn dipilih dari titik yang terhubung dan berjarak 500–1000 world units dari Raka.
+Tes alur memakai pemindahan posisi dekat objek agar efisien; tes akses memeriksa konektivitas dengan collision aktual. Tes akhir benar-benar menjalankan move_and_slide ke pintu, tetapi mengendalikan state/posisi Ardi untuk memisahkan pengujian kondisi berhasil. Ini belum membuktikan keseimbangan kesulitan pada permainan manusia. Tampilan visual, layering sprite, keterbacaan dan rasa pengejaran tetap memerlukan F5/playtest; panduan ada di GAMEPLAY_GUIDE.md.
 
-Angka kecepatan, jarak spawn, dan durasi sembunyi 5 detik adalah parameter prototipe implementasi, bukan ketentuan GDD. Saat Raka bersembunyi, Ardi menuju lokasi terakhir yang diketahui. Keluar sebelum waktunya membatalkan hitungan sembunyi; setelah 5 detik, ancaman berakhir dan objective mengarahkan pemain ke pintu utama.
+Lingkungan sandbox memberi error root certificate Windows; editor CLI juga tidak bisa menyimpan editor settings di luar workspace. Keduanya terpisah dari script/scene, tes runtime tetap selesai. Tidak ada klaim bahwa screenshot/render visual telah diuji.
 
-Checkpoint menyimpan keenam clue, loop_count, peristiwa yang sudah dilihat, dan posisi sebelum pengejaran di memori sesi. Tertangkap menampilkan ilustrasi IMG_3842.PNG dan tombol ulang. Kedua ending dipilih secara langsung, tanpa penilaian jumlah clue tambahan.
+Perintah (ganti `Godot` dengan executable lokal):
 
-Belum ada: adegan visual CCTV, animasi jam, perubahan geometri lingkungan, respons AI terhadap suara/cahaya, audio, save/load ke disk, serta pemutaran video MP4. Vignette yang tersedia dipakai ringan setelah loop. Ilustrasi ending dan teks sudah ada; belum berupa cutscene animasi.
-
-## File
-
-- `script/story_data.gd`: naskah draf per peristiwa dan reaksi clue.
-- `script/game_state.gd`: objective, penanda waktu, peristiwa sekali per sesi, syarat urutan awal.
-- `script/gameplay_ui.gd`: panel dialog, kontrol lanjut/jeda, objective dan waktu HUD.
-- `script/room_controller.gd`: memicu peristiwa saat tiba di ruangan.
-- `script/portal.gd`: urutan laptop/loop dan perlindungan terhadap interaksi berulang saat fade.
-- `script/ardi_chase.gd`: sprite dan navigasi pengejaran menggunakan collision aktual.
-- `script/finale_controller.gd`: kemunculan, checkpoint, sembunyi, dan tertangkap.
-- `script/finale_screen.gd`: layar tertangkap, keputusan, dan kedua ending.
-- `tests/finale_flow_check.gd`: uji pengejaran, berjalan ke lemari/pintu, pengulangan checkpoint, serta ending buruk.
-- `tests/story_flow_check.gd`: uji alur dan regresi UI melalui Godot CLI.
-
-Layout ruangan, PNG, collision, movement, animasi, dan kamera tidak diubah.
-
-## Validasi
-
-Uji otomatis dengan Godot 4.7.2 menggunakan main menu, input E/I/Esc, klik tombol menu, dan transisi asli. Lokasi pemain dipindahkan oleh test agar berada dalam jangkauan interaksi; tes ini tidak membuktikan bahwa semua lokasi dapat dicapai dengan berjalan.
-
-Hasil: 58 pemeriksaan alur cerita/UI dan 24 pemeriksaan pengejaran/checkpoint/ending lulus. Uji pengejaran menggerakkan Raka dengan move_and_slide melalui jalur physics, bukan memindahkan langsung ke lemari/pintu. Uji menangkap sengaja memposisikan Ardi di dekat Raka untuk memicu kegagalan. Lingkungan CLI mengeluarkan error pembacaan root certificate store Windows yang tidak menghalangi tes lokal.
-
-Perintah:
 ```text
-Godot --headless --path D:/AfterHours/after-hours --script res://tests/story_flow_check.gd --quit-after 3600
-Godot --headless --path D:/AfterHours/after-hours --script res://tests/finale_flow_check.gd --quit-after 7200
+Godot --headless --path D:/AfterHours/after-hours --script res://tests/revision_access_check.gd --quit-after 5000
+Godot --headless --path D:/AfterHours/after-hours --script res://tests/revision_chase_check.gd --quit-after 8000
+Godot --headless --path D:/AfterHours/after-hours --script res://tests/story_flow_check.gd --quit-after 8000
+Godot --headless --path D:/AfterHours/after-hours --script res://tests/finale_flow_check.gd --quit-after 12000
+Godot --headless --path D:/AfterHours/after-hours --script res://tests/gudang_physics_check.gd --quit-after 5000
+Godot --headless --path D:/AfterHours/after-hours --script res://tests/gudang_physics_check.gd --quit-after 5000 -- --studio
 ```
 
-Pengujian manual:
-1. F5 → Start Game; baca monolog dan perhatikan objective.
-2. Dekati laptop, E, lalu lanjutkan dialog sampai selesai.
-3. Gunakan pintu keluar utama, baca reaksi loop; periksa penanda 22.17.
-4. Periksa mading dan loker; coba I untuk membaca clue.
-5. Pergi ke Gudang, periksa kedua clue, lalu ke Studio dan ambil C6.
-6. Kembali ke LABKOM; selesai dialog, hindari Ardi. Ikuti arah HUD menuju lemari, E, dan tunggu 5 detik.
-7. Sesudah suasana tenang, E untuk keluar dari lemari, lalu dekati pintu keluar utama dan tekan E. Coba kedua pilihan ending dalam run terpisah.
-8. Biarkan tertangkap dalam pengujian lain. Pastikan Ulangi dari checkpoint mempertahankan petunjuk dan mengembalikan posisi sebelum pengejaran.
-7. Saat dialog, coba Esc → Continue; saat gameplay coba Restart. Pastikan posisi panel, ukuran teks, dan akses objek nyaman pada ukuran jendela yang digunakan.
+Pemakaian aset UI/portrait sebelumnya tetap: HOME PAGE, pause per area, ikon tas/pause, MADING AJA, LOKER + BUKU, dua bentang diary, ORANG HILANG, POSTER KTM, portrait Raka, dan ilustrasi dua ending. Alternatif PNG satu halaman tidak ditumpuk di atas halaman yang sudah aktif. ASSET_USAGE.csv diperbarui untuk video OGV.
 
-## Pembaca dokumen dan portrait
-
-Sudah terhubung ke UI yang ada, tanpa mengubah layout/collision ruangan atau PNG:
-
-| Aset | Pemakaian |
-| --- | --- |
-| IMG_3827.PNG | Portrait Raka netral pada pembukaan dan percakapan biasa |
-| IMG_3830.PNG | Portrait Raka terkejut pada pemeriksaan hasil laptop C1 dan reaksinya |
-| IMG_3825.PNG | Portrait Raka takut pada loop pertama |
-| IMG_3829.PNG | Portrait Raka sedih pada refleksi dan reaksi petunjuk berikutnya |
-| DIARY HAL 1 3.png, DIARY HAL 3 5.png | Dua bentang diary, dibuka dengan mengklik buku merah di tampilan loker |
-| ORANG HILANG.png | Poster yang dibuka dari mading |
-| POSTER KTM.png | Pengumuman kehilangan KTM yang dibuka dari mading; bukan pengganti kartu mahasiswa C3 |
-
-Portrait memakai AtlasTexture untuk menampilkan gambar dari PNG asli; gambar tidak diedit. Portrait tidak tampil pada halaman dokumen atau inventori. Ardi muncul dengan kalimat singkat “Tunggu aku...” saat pertemuan terakhir, sesuai premis GDD.
-
-Pembaca dokumen menyediakan Sebelumnya/Berikutnya untuk diary, Perbesar/Ukuran semula dan scrollbar untuk membaca tulisan kecil. Esc/Kembali mengembalikan pemain ke loker/mading asal. Inventori C2 dan C3 menyediakan tombol untuk membuka kembali mading/loker; kembali dari pemeriksaan itu menuju inventori.
-
-Tulisan diary dan poster ditampilkan persis dari gambar tim; tidak disalin menjadi fakta cerita baru atau persyaratan progres tambahan. Membaca dokumen tidak menambah clue duplikat.
-
-Perubahan file tambahan: `script/evidence_reader.gd` untuk pembaca dokumen reusable; `script/gameplay_ui.gd` untuk area klik, navigasi dan portrait; `script/story_data.gd` untuk ekspresi; `tests/story_flow_check.gd` untuk pengujian interaksi baru.
-
-Tes visual manual tambahan: periksa diary dan dua poster dengan klik, uji tombol halaman serta zoom/scroll, buka ulang lewat I, dan pastikan portrait Raka tampak saat membuka laptop serta ketika melanjutkan reaksinya. Pengujian CLI memastikan state/input/texture yang dipilih; keterbacaan tulisan dan komposisi final masih perlu dilihat di jendela game.
+Hasil akhir revisi: **273 pemeriksaan lulus, 0 gagal** (akses/lemari 74; AI 34; cerita/UI 60; finale/video 29; Gudang 32; Studio 44). Log validasi berada di `D:/AfterHours/revision-*.log`. Tes tambahan memastikan pintu utama dapat dicoba sebelum laptop tanpa mengubah objective awal, serta melewati Raka yang tersembunyi tidak memicu tangkap di ketiga ruangan.
